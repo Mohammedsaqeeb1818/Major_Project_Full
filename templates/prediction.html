@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="/predict" method="POST">
+
+    <label>Attendance Percentage</label>
+    <input
+        type="number"
+        name="attendance_percentage"
+        min="0"
+        max="100"
+        step="0.01"
+        required
+    >
+
+    <label>Internal Marks</label>
+    <input
+        type="number"
+        name="internal_marks"
+        min="0"
+        max="50"
+        step="0.01"
+        required
+    >
+
+    <label>Assignment Marks</label>
+    <input
+        type="number"
+        name="assignment_marks"
+        min="0"
+        max="50"
+        step="0.01"
+        required
+    >
+
+    <label>Study Hours Per Day</label>
+    <input
+        type="number"
+        name="study_hours_per_day"
+        min="0"
+        max="16"
+        step="0.01"
+        required
+    >
+
+    <label>Previous SGPA</label>
+    <input
+        type="number"
+        name="previous_sgpa"
+        min="0"
+        max="10"
+        step="0.01"
+        required
+    >
+
+    <label>Backlogs</label>
+    <input
+        type="number"
+        name="backlogs"
+        min="0"
+        max="10"
+        step="1"
+        required
+    >
+
+    <label>Lab Performance</label>
+    <input
+        type="number"
+        name="lab_performance"
+        min="0"
+        max="100"
+        step="0.01"
+        required
+    >
+
+    <label>Participation</label>
+    <input
+        type="number"
+        name="participation"
+        min="0"
+        max="100"
+        step="0.01"
+        required
+    >
+
+    <button type="submit">
+        Predict Performance
+    </button>
+
+</form>
+{% if prediction %}
+
+    <h2>Predicted Performance</h2>
+
+    <h1>{{ prediction }}</h1>
+
+    <p>Model Used: {{ model_name }}</p>
+
+{% endif %}
+
+
+{% if error %}
+
+    <h2>{{ error }}</h2>
+
+    {% if constraint_errors %}
+
+        {% for message in constraint_errors %}
+
+            <p>{{ message }}</p>
+
+        {% endfor %}
+
+    {% endif %}
+
+{% endif %}
+</body>
+</html>
+
