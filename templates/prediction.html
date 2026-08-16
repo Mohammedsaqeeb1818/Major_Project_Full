@@ -104,6 +104,31 @@
 {% endif %}
 
 
+<!-- #================================================
+# Recommendation Section
+#=============================================== -->
+
+{% if recommendations %}
+
+<div class="recommendations">
+
+    <h2>💡 Personalized Recommendations</h2>
+
+    <ul>
+
+        {% for recommendation in recommendations %}
+
+            <li>{{ recommendation }}</li>
+
+        {% endfor %}
+
+    </ul>
+
+</div>
+
+{% endif %}
+
+
 {% if error %}
 
     <h2>{{ error }}</h2>
