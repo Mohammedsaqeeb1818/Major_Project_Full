@@ -250,6 +250,12 @@ def generate_recommendations(data, prediction):
 @app.route("/")
 def home():
     return render_template(
+        "index.html"
+    )
+
+@app.route("/predict-page")
+def predict_page():
+    return render_template(
         "prediction.html"
     )
 
