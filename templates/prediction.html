@@ -145,6 +145,60 @@
 
 {% endif %}
 
+<!-- ALL Models Predictions -->
+{% if all_predictions %}
+
+<h2>Model Predictions</h2>
+
+<table border="1">
+
+    <tr>
+        <th>Model</th>
+        <th>Prediction</th>
+    </tr>
+
+    {% for model, result in all_predictions.items() %}
+
+    <tr>
+
+        <td>{{ model }}</td>
+
+        <td>{{ result }}</td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endif %}
+
+<!-- Recommendations -->
+
+{% if recommendations %}
+
+<h2>💡 Personalized Recommendations</h2>
+
+<ul>
+
+    {% for recommendation in recommendations %}
+
+    <li>
+        {{ recommendation }}
+    </li>
+
+    {% endfor %}
+
+</ul>
+
+{% endif %}
+
+
+<a href="/models">
+    <button type="button">
+        📊 View Model Analysis
+    </button>
+</a>
 
 </body>
 </html>

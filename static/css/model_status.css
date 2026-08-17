@@ -1,0 +1,188 @@
+/* ===== Base ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #0a0a0a;
+    color: #e0e0e0;
+    font-family: 'Consolas', 'Courier New', monospace;
+    min-height: 100vh;
+    padding: 40px 20px;
+    line-height: 1.5;
+}
+
+/* ===== Container ===== */
+.console-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ===== Titles ===== */
+h1 {
+    color: #00ff9d;
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+    text-shadow: 0 0 10px rgba(0, 255, 157, 0.4);
+}
+
+h2 {
+    color: #00b7ff;
+    font-size: 1.3rem;
+    margin: 45px 0 20px;
+    opacity: 0.9;
+}
+
+/* ===== Best Model Box ===== */
+.best-model-box {
+    background: #111;
+    border: 1px solid #00ff9d;
+    border-radius: 8px;
+    padding: 18px 24px;
+    margin-bottom: 40px;
+    box-shadow: 0 0 20px rgba(0, 255, 157, 0.15);
+    animation: fadeIn 0.6s ease;
+}
+
+.best-model-box .console-header {
+    color: #00ff9d;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+.best-name {
+    font-size: 1.6rem;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+/* ===== Models Grid ===== */
+.models-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 22px;
+}
+
+/* ===== Black Console Box ===== */
+.model-box {
+    background: #0d0d0d;
+    border: 1px solid #222;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: renderBox 0.6s forwards;
+    animation: fadeIn 0.6s ease forwards;
+    transition: all 0.3s ease;
+}
+
+.model-box:hover {
+    border-color: #00b7ff;
+    box-shadow: 0 0 25px rgba(0, 183, 255, 0.25);
+    transform: translateY(-5px);
+}
+
+/* Console Header (like terminal window) */
+.console-header {
+    background: #1a1a1a;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.console-header .title {
+    color: #00b7ff;
+    font-size: 0.95rem;
+    margin-left: 8px;
+    font-weight: 600;
+}
+
+/* Traffic light dots */
+.dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+}
+.dot.red { background: #ff5f56; }
+.dot.yellow { background: #ffbd2e; }
+.dot.green { background: #27c93f; }
+
+/* Console Body */
+.console-body {
+    padding: 18px;
+}
+
+.stat-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 7px 0;
+    border-bottom: 1px dashed #222;
+    font-size: 0.95rem;
+}
+
+.stat-line:last-child {
+    border-bottom: none;
+}
+
+.stat-line .label {
+    color: #888;
+}
+
+.stat-line .value {
+    color: #00ff9d;
+    font-weight: 600;
+}
+
+/* Info boxes (How models work) */
+.info-box .console-body p {
+    color: #bbb;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.info-box .console-header .title {
+    color: #ff9f43;
+}
+
+/* ===== Rendering Animation ===== */
+@keyframes renderBox {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Optional: blinking cursor effect */
+.best-name::after {
+    content: "▋";
+    color: #00ff9d;
+    animation: blink 1s infinite;
+    margin-left: 4px;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+    .models-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    h1 {
+        font-size: 1.4rem;
+    }
+}

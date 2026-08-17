@@ -112,7 +112,7 @@ CONSTRAINTS = {
 
 
 # ============================================================
-# 5. GENERATE PERSONALIZED RECOMMENDATIONS
+# GENERATE PERSONALIZED RECOMMENDATIONS
 # ============================================================
 
 def generate_recommendations(data, prediction):
@@ -121,65 +121,65 @@ def generate_recommendations(data, prediction):
 
     prediction_lower = str(prediction).lower()
 
-    # ========================================================
-    # POOR PERFORMANCE
-    # ========================================================
+    # --------------------------------------------------------
+    # POOR
+    # --------------------------------------------------------
 
     if prediction_lower == "poor":
 
         if data["attendance_percentage"] < 75:
             recommendations.append(
-                "⚠ Improve attendance. Try to maintain at least 75% attendance."
+                "Improve attendance. Try to maintain at least 75% attendance."
             )
 
         if data["internal_marks"] < 25:
             recommendations.append(
-                "⚠ Internal marks are low. Revise regularly and prepare well for examinations."
+                "Internal marks are low. Revise regularly and prepare well for examinations."
             )
 
         if data["assignment_marks"] < 25:
             recommendations.append(
-                "⚠ Complete assignments on time and clarify difficult topics."
+                "Complete assignments on time and clarify difficult topics."
             )
 
         if data["study_hours_per_day"] < 2:
             recommendations.append(
-                "⚠ Increase focused study time. Try to study for at least 2 hours every day."
+                "Increase focused study time. Try to study for at least 2 hours every day."
             )
 
         if data["previous_sgpa"] < 6:
             recommendations.append(
-                "⚠ Focus on subjects where you previously performed poorly."
+                "Focus on subjects where you previously performed poorly."
             )
 
         if data["backlogs"] > 0:
             recommendations.append(
-                "⚠ Prioritize clearing your backlogs."
+                "Prioritize clearing your backlogs."
             )
 
         if data["lab_performance"] < 50:
             recommendations.append(
-                "⚠ Improve practical skills by regularly practicing laboratory programs."
+                "Improve practical skills by regularly practicing laboratory programs."
             )
 
         if data["participation"] < 50:
             recommendations.append(
-                "⚠ Participate more actively in classes and discussions."
+                "Participate more actively in classes and discussions."
             )
 
         if not recommendations:
             recommendations.append(
-                "⚠ The model predicts poor performance. Maintain a consistent study schedule and monitor your progress."
+                "The model predicts poor performance. Maintain a consistent study schedule and monitor your progress."
             )
 
-    # ========================================================
-    # AVERAGE PERFORMANCE
-    # ========================================================
+    # --------------------------------------------------------
+    # AVERAGE
+    # --------------------------------------------------------
 
     elif prediction_lower == "average":
 
         recommendations.append(
-            "📚 Your performance is average. Focus on improving your weakest areas."
+            "Your performance is average. Focus on improving your weakest areas."
         )
 
         if data["attendance_percentage"] < 75:
@@ -197,14 +197,14 @@ def generate_recommendations(data, prediction):
                 "Work on clearing your backlogs."
             )
 
-    # ========================================================
-    # GOOD PERFORMANCE
-    # ========================================================
+    # --------------------------------------------------------
+    # GOOD
+    # --------------------------------------------------------
 
     elif prediction_lower == "good":
 
         recommendations.append(
-            "👍 Good performance! Continue maintaining your current academic routine."
+            "Good performance! Continue maintaining your current academic routine."
         )
 
         if data["attendance_percentage"] < 75:
@@ -217,23 +217,23 @@ def generate_recommendations(data, prediction):
                 "Consider increasing your daily study time."
             )
 
-    # ========================================================
-    # EXCELLENT PERFORMANCE
-    # ========================================================
+    # --------------------------------------------------------
+    # EXCELLENT
+    # --------------------------------------------------------
 
     elif prediction_lower == "excellent":
 
         recommendations.append(
-            "🏆 Excellent performance! Continue maintaining your current study habits."
+            "Excellent performance! Continue maintaining your current study habits."
         )
 
         recommendations.append(
-            "⭐ Keep your attendance, assignments, practical work and participation consistent."
+            "Keep your attendance, assignments, practical work and participation consistent."
         )
 
         if data["backlogs"] == 0:
             recommendations.append(
-                "✅ Excellent! You currently have no backlogs."
+                "Excellent! You currently have no backlogs."
             )
 
     return recommendations
@@ -460,10 +460,68 @@ def predict():
             prediction_encoded
         )[0]
 
-        recommendations = generate_recommendations(
-    input_data,
-    prediction
-)
+# ============================================================
+# PREDICT USING ALL 5 MODELS
+# ============================================================
+
+        all_predictions = {}
+
+        model_files = {
+
+            "Decision Tree":
+                "saved_models/decision_tree.pkl",
+
+            "KNN":
+                "saved_models/knn.pkl",
+
+            "Logistic Regression":
+                "saved_models/logistic_regression.pkl",
+
+            "Random Forest":
+                "saved_models/random_forest.pkl",
+
+            "SVM":
+                "saved_models/svm.pkl"
+        }
+
+
+        for model_name, model_path in model_files.items():
+
+            current_model = joblib.load(model_path)
+
+            if model_name in [
+                "KNN",
+                "Logistic Regression",
+                "SVM"
+            ]:
+
+                input_scaled = scaler.transform(
+                    input_imputed
+                )
+
+                encoded_prediction = current_model.predict(
+                    input_scaled
+                )
+
+            else:
+
+                encoded_prediction = current_model.predict(
+                    input_imputed
+                )
+
+            current_prediction = label_encoder.inverse_transform(
+                encoded_prediction
+            )[0]
+
+            all_predictions[model_name] = current_prediction
+
+            recommendations = generate_recommendations(
+            input_data,
+            prediction
+        )
+
+
+    
         
     # ====================================================
     # DISPLAY RESULT
@@ -471,10 +529,15 @@ def predict():
 
         return render_template(
         "prediction.html",
+
         prediction=prediction,
+
         model_name=best_model_name,
-        recommendations=recommendations
-    )
+
+        recommendations=recommendations,
+
+        all_predictions=all_predictions
+)
 
 
 
@@ -489,7 +552,14 @@ def predict():
             error=f"Prediction Error: {str(e)}"
         )
 
-
+@app.route("/models")
+def models_page():
+    model_results = joblib.load(
+        "saved_models/model_results.pkl"
+    )
+    return render_template("models.html",
+                           model_results=model_results,best_model_name=best_model_name )
+   
 
 
 

@@ -489,6 +489,20 @@ os.makedirs(
 
 
 # ------------------------------------------------------------
+# SAVE ALL TRAINED MODELS
+# ------------------------------------------------------------
+
+for model_name, trained_model in trained_models.items():
+
+    safe_name = model_name.lower().replace(" ", "_")
+
+    joblib.dump(
+        trained_model,
+        f"saved_models/{safe_name}.pkl"
+    )
+
+
+# ------------------------------------------------------------
 # SAVE BEST MODEL
 # ------------------------------------------------------------
 

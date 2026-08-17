@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Model Analysis</title>
+    <link rel="stylesheet" href="/static/css/model_status.css">
+</head>
+<body>
+
+    <div class="console-container">
+        <h1>// Machine Learning Model Analysis</h1>
+
+        <div class="best-model-box">
+            <div class="console-header">BEST MODEL DETECTED</div>
+            <div class="best-name">{{ best_model_name }}</div>
+        </div>
+
+        <h2>> Model Performance Console</h2>
+<div class="models-grid">
+    {% for model, metrics in model_results.items() %}
+
+    <div class="model-box">
+        <div class="console-header">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+            <span class="title">{{ model }}</span>
+        </div>
+
+                <div class="console-body">
+                    <div class="stat-line">
+                        <span class="label">Accuracy</span>
+                        <span class="value">{{ "%.2f"|format(metrics["accuracy"] * 100) }}%</span>
+                    </div>
+                    <div class="stat-line">
+                        <span class="label">Precision</span>
+                        <span class="value">{{ "%.4f"|format(metrics["precision"]) }}</span>
+                    </div>
+                    <div class="stat-line">
+                        <span class="label">Recall</span>
+                        <span class="value">{{ "%.4f"|format(metrics["recall"]) }}</span>
+                    </div>
+                    <div class="stat-line">
+                        <span class="label">F1 Score</span>
+                        <span class="value">{{ "%.4f"|format(metrics["f1"]) }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <h2>> How the Models Work</h2>
+
+        <div class="models-grid">
+            <div class="model-box info-box">
+                <div class="console-header"><span class="title">Decision Tree</span></div>
+                <div class="console-body">
+                    <p>Decision Tree uses a tree-like structure of decision rules to classify student performance.</p>
+                </div>
+            </div>
+
+            <div class="model-box info-box">
+                <div class="console-header"><span class="title">KNN</span></div>
+                <div class="console-body">
+                    <p>KNN predicts performance by finding similar students in the training dataset.</p>
+                </div>
+            </div>
+
+            <div class="model-box info-box">
+                <div class="console-header"><span class="title">Logistic Regression</span></div>
+                <div class="console-body">
+                    <p>Logistic Regression uses relationships between input features to classify student performance.</p>
+                </div>
+            </div>
+
+            <div class="model-box info-box">
+                <div class="console-header"><span class="title">Random Forest</span></div>
+                <div class="console-body">
+                    <p>Random Forest combines multiple decision trees to produce a robust prediction.</p>
+                </div>
+            </div>
+
+            <div class="model-box info-box">
+                <div class="console-header"><span class="title">SVM</span></div>
+                <div class="console-body">
+                    <p>SVM finds a decision boundary that separates different performance classes.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
