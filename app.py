@@ -1,15 +1,34 @@
 from flask import Flask, render_template, request
-
+from flask import (
+    Flask,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    session,
+    flash
+)
 import pandas as pd
 import joblib
 import os
+import mysql.connector
+from werkzeug.security import generate_password_hash, check_password_hash
 
+def get_db_connection():
+    return mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="mdsaqeeb123#",
+        database="student_performance_db"
+    )
 
 # ============================================================
 # 1. CREATE FLASK APPLICATION
 # ============================================================
 
 app = Flask(__name__)
+app.secret_key = "student-performance-secret-key"
+
 
 
 # ============================================================
@@ -253,11 +272,14 @@ def home():
         "index.html"
     )
 
+
+#No one can access it
 @app.route("/predict-page")
 def predict_page():
-    return render_template(
-        "prediction.html"
-    )
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    return render_template("prediction.html")
 
 
 # ============================================================
@@ -559,8 +581,129 @@ def models_page():
     )
     return render_template("models.html",
                            model_results=model_results,best_model_name=best_model_name )
-   
 
+
+#Login Page Routing
+   
+@app.route("/login", methods=["GET", "POST"])
+def login():
+
+    if request.method == "POST":
+
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        connection = None
+        cursor = None
+
+        try:
+            connection = get_db_connection()
+            cursor = connection.cursor(dictionary=True)
+
+            query = """
+                SELECT id, username, password
+                FROM users
+                WHERE username = %s
+            """
+
+            cursor.execute(query, (username,))
+
+            user = cursor.fetchone()
+
+            if user and check_password_hash(user["password"], password):
+
+                session["user_id"] = user["id"]
+                session["username"] = user["username"]
+
+                return redirect(url_for("predict_page"))
+
+            else:
+                flash("Invalid username or password.")
+
+        except mysql.connector.Error as error:
+
+            print("MySQL Error:", error)
+
+            flash("Database connection error.")
+
+        finally:
+
+            if cursor:
+                cursor.close()
+
+            if connection:
+                connection.close()
+
+    return render_template("login.html")
+
+
+
+
+#Register Page Opening Route
+@app.route("/register", methods=["GET", "POST"])
+def register():
+
+    if request.method == "POST":
+
+        username = request.form.get("username")
+        email = request.form.get("email")
+        password = request.form.get("password")
+
+        hashed_password = generate_password_hash(password)
+
+        connection = None
+        cursor = None
+
+        try:
+
+            connection = get_db_connection()
+            cursor = connection.cursor()
+
+            query = """
+                INSERT INTO users (username, email, password)
+                VALUES (%s, %s, %s)
+            """
+
+            cursor.execute(
+                query,
+                (username, email, hashed_password)
+            )
+
+            connection.commit()
+
+            flash("Account created successfully. Please login.")
+
+            return redirect(url_for("login"))
+
+        except mysql.connector.IntegrityError:
+
+            flash("Username or email already exists.")
+
+        except mysql.connector.Error as error:
+
+            print("MySQL Error:", error)
+
+            flash("Registration failed.")
+
+        finally:
+
+            if cursor:
+                cursor.close()
+
+            if connection:
+                connection.close()
+
+    return render_template("register.html")
+
+
+
+#logout Option route 
+@app.route("/logout")
+def logout():
+
+    session.clear()
+
+    return redirect(url_for("login"))
 
 
 
