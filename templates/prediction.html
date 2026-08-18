@@ -6,7 +6,7 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="/predict" method="POST">
+    <form action="{{ url_for('prediction.predict') }}" method="POST">
 
     <label>Attendance Percentage</label>
     <input
@@ -194,12 +194,13 @@
 {% endif %}
 
 
-<a href="/models">
+<a href="{{ url_for('model.models_page') }}">
     <button type="button">
         📊 View Model Analysis
     </button>
 </a>
-<a href="{{ url_for('logout') }}">Logout</a>
+
+<a href="{{ url_for('auth.logout') }}">Logout</a>
 </body>
 </html>
 
