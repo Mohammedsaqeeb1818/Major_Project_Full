@@ -1,188 +1,502 @@
-/* ===== Base ===== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* ==========================================================================
+   SUCCESSAI — MODEL ANALYSIS STYLESHEET
+   "Console Grid" — a bank of terminal windows, one per model.
+   Extends the Terminal Control Room design system used across
+   login.css, xai.css and prediction.css.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. CSS VARIABLES
+   -------------------------------------------------------------------------- */
+:root {
+  --bg-void: #05070d;
+  --bg-panel: #080b16;
+  --surface-glass: rgba(13, 18, 32, 0.62);
+  --surface-glass-soft: rgba(17, 22, 38, 0.42);
+  --surface-raised: #0e1424;
+  --surface-console: #0a0e1b;
+
+  --cyan: #22d3ee;
+  --cyan-dim: rgba(34, 211, 238, 0.16);
+  --violet: #8b5cf6;
+  --violet-dim: rgba(139, 92, 246, 0.16);
+  --accent-gradient: linear-gradient(120deg, var(--cyan), var(--violet));
+
+  --text-primary: #eaeefb;
+  --text-secondary: #aab2c8;
+  --text-muted: #626a82;
+
+  --border: rgba(154, 168, 204, 0.14);
+  --border-strong: rgba(154, 168, 204, 0.26);
+
+  --success: #34d399;
+  --success-dim: rgba(52, 211, 153, 0.14);
+  --warn: #fbbf24;
+  --error: #f87171;
+
+  /* macOS-style traffic-light chrome */
+  --dot-red: #ff5f57;
+  --dot-yellow: #febc2e;
+  --dot-green: #28c840;
+
+  --font-display: "Space Grotesk", Inter, system-ui, sans-serif;
+  --font-body: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+
+  --radius-lg: 20px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --------------------------------------------------------------------------
+   2. GLOBAL RESET
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
 }
 
 body {
-    background: #0a0a0a;
-    color: #e0e0e0;
-    font-family: 'Consolas', 'Courier New', monospace;
-    min-height: 100vh;
-    padding: 40px 20px;
-    line-height: 1.5;
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background: var(--bg-void);
+  min-height: 100vh;
+  position: relative;
+  isolation: isolate;
+  overflow-x: hidden;
 }
 
-/* ===== Container ===== */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+p {
+  line-height: 1.6;
+}
+
+/* --------------------------------------------------------------------------
+   3. BACKGROUND
+   -------------------------------------------------------------------------- */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -10%;
+  z-index: -2;
+  background:
+    radial-gradient(36rem 26rem at 8% 6%, var(--violet-dim), transparent 60%),
+    radial-gradient(32rem 24rem at 94% 92%, var(--cyan-dim), transparent 60%);
+  pointer-events: none;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 70% 55% at 50% 15%, black 12%, transparent 75%);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   4. PAGE CONTAINER / HEADINGS
+   -------------------------------------------------------------------------- */
 .console-container {
-    max-width: 1200px;
-    margin: 0 auto;
+  width: min(1080px, 100%);
+  margin-inline: auto;
+  padding: clamp(28px, 5vw, 52px) clamp(16px, 4vw, 24px) 72px;
 }
 
-/* ===== Titles ===== */
-h1 {
-    color: #00ff9d;
-    font-size: 1.8rem;
-    margin-bottom: 30px;
-    text-shadow: 0 0 10px rgba(0, 255, 157, 0.4);
+.console-container > h1 {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: clamp(1.15rem, 2.6vw, 1.5rem);
+  letter-spacing: -0.005em;
+  color: var(--text-primary);
+  margin-bottom: 28px;
+  animation: fadeUp 0.5s var(--ease-out) both;
 }
 
-h2 {
-    color: #00b7ff;
-    font-size: 1.3rem;
-    margin: 45px 0 20px;
-    opacity: 0.9;
+.console-container > h2 {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 1.02rem;
+  color: var(--cyan);
+  margin: 40px 0 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
 }
 
-/* ===== Best Model Box ===== */
+/* --------------------------------------------------------------------------
+   5. BEST MODEL — FEATURED TERMINAL
+   -------------------------------------------------------------------------- */
 .best-model-box {
-    background: #111;
-    border: 1px solid #00ff9d;
-    border-radius: 8px;
-    padding: 18px 24px;
-    margin-bottom: 40px;
-    box-shadow: 0 0 20px rgba(0, 255, 157, 0.15);
-    animation: fadeIn 0.6s ease;
+  position: relative;
+  padding: clamp(22px, 4vw, 32px);
+  background: linear-gradient(160deg, var(--success-dim), transparent 70%), var(--surface-glass);
+  border: 1px solid rgba(52, 211, 153, 0.32);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  overflow: hidden;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  animation: fadeUp 0.55s var(--ease-out) 0.05s both, haloPulse 3.2s ease-in-out infinite;
+}
+
+.best-model-box::before {
+  content: "🏆";
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  font-size: 1.1rem;
+  opacity: 0.85;
+}
+
+@keyframes haloPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.16); }
+  50%      { box-shadow: 0 0 0 14px rgba(52, 211, 153, 0); }
 }
 
 .best-model-box .console-header {
-    color: #00ff9d;
-    font-size: 0.85rem;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--success);
+  margin-bottom: 14px;
 }
 
 .best-name {
-    font-size: 1.6rem;
-    color: #ffffff;
-    font-weight: bold;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.7rem, 5vw, 2.4rem);
+  letter-spacing: -0.01em;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 22px rgba(34, 211, 238, 0.25));
 }
 
-/* ===== Models Grid ===== */
+/* --------------------------------------------------------------------------
+   6. MODEL GRID
+   -------------------------------------------------------------------------- */
 .models-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
 }
 
-/* ===== Black Console Box ===== */
+/* --------------------------------------------------------------------------
+   7. MODEL BOX — TERMINAL WINDOW CHROME
+   -------------------------------------------------------------------------- */
 .model-box {
-    background: #0d0d0d;
-    border: 1px solid #222;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
-    opacity: 0;
-    transform: translateY(20px);
-    animation: renderBox 0.6s forwards;
-    animation: fadeIn 0.6s ease forwards;
-    transition: all 0.3s ease;
+  position: relative;
+  background: var(--surface-console);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: transform 0.28s var(--ease-out), box-shadow 0.28s var(--ease-out),
+    border-color 0.28s var(--ease-out);
+  animation: fadeUp 0.5s var(--ease-out) both;
 }
 
+/* bring the "window" to focus on hover, like an OS raising a clicked window */
 .model-box:hover {
-    border-color: #00b7ff;
-    box-shadow: 0 0 25px rgba(0, 183, 255, 0.25);
-    transform: translateY(-5px);
+  transform: translateY(-4px) scale(1.015);
+  border-color: var(--border-strong);
+  box-shadow: 0 22px 44px -18px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(34, 211, 238, 0.18);
+  z-index: 2;
 }
 
-/* Console Header (like terminal window) */
-.console-header {
-    background: #1a1a1a;
-    padding: 10px 14px;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    border-bottom: 1px solid #2a2a2a;
+.model-box .console-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 14px;
+  background: var(--surface-raised);
+  border-bottom: 1px solid var(--border);
 }
 
-.console-header .title {
-    color: #00b7ff;
-    font-size: 0.95rem;
-    margin-left: 8px;
-    font-weight: 600;
-}
-
-/* Traffic light dots */
 .dot {
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: box-shadow 0.25s var(--ease-out), transform 0.25s var(--ease-out);
 }
-.dot.red { background: #ff5f56; }
-.dot.yellow { background: #ffbd2e; }
-.dot.green { background: #27c93f; }
 
-/* Console Body */
+.dot.red { background: var(--dot-red); }
+.dot.yellow { background: var(--dot-yellow); }
+.dot.green { background: var(--dot-green); }
+
+.model-box:hover .dot.red { box-shadow: 0 0 8px var(--dot-red); }
+.model-box:hover .dot.yellow { box-shadow: 0 0 8px var(--dot-yellow); }
+.model-box:hover .dot.green { box-shadow: 0 0 8px var(--dot-green); }
+
+.model-box .title {
+  margin-left: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* blinking cursor after the window title on hover — reinforces "live" feel */
+.model-box .title::after {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 12px;
+  margin-left: 6px;
+  vertical-align: -2px;
+  background: var(--cyan);
+  opacity: 0;
+  transition: opacity 0.2s var(--ease-out);
+}
+
+.model-box:hover .title::after {
+  opacity: 1;
+  animation: caret 1s steps(1) infinite;
+}
+
+@keyframes caret {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
 .console-body {
-    padding: 18px;
+  padding: 16px 18px 18px;
 }
 
+/* --------------------------------------------------------------------------
+   8. STAT LINES (metrics)
+   -------------------------------------------------------------------------- */
 .stat-line {
-    display: flex;
-    justify-content: space-between;
-    padding: 7px 0;
-    border-bottom: 1px dashed #222;
-    font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  margin: 0 -10px;
+  border-radius: 6px;
+  transition: background 0.2s var(--ease-out), padding-left 0.2s var(--ease-out);
 }
 
-.stat-line:last-child {
-    border-bottom: none;
+.stat-line + .stat-line {
+  border-top: 1px dashed var(--border);
+}
+
+.stat-line:hover {
+  background: var(--surface-glass-soft);
+  padding-left: 14px;
 }
 
 .stat-line .label {
-    color: #888;
+  font-size: 0.82rem;
+  color: var(--text-muted);
 }
 
 .stat-line .value {
-    color: #00ff9d;
-    font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: var(--cyan);
+  font-variant-numeric: tabular-nums;
 }
 
-/* Info boxes (How models work) */
+/* --------------------------------------------------------------------------
+   9. INFO BOXES ("How the Models Work")
+   -------------------------------------------------------------------------- */
+.info-box .console-header {
+  background: var(--surface-raised);
+}
+
 .info-box .console-body p {
-    color: #bbb;
-    font-size: 0.9rem;
-    line-height: 1.6;
+  font-size: 0.86rem;
+  color: var(--text-secondary);
 }
 
-.info-box .console-header .title {
-    color: #ff9f43;
+/* cycle an accent color per card so the five explainer windows read as a
+   set rather than five identical gray boxes */
+.info-box:nth-of-type(5n+1) .title { color: var(--cyan); }
+.info-box:nth-of-type(5n+2) .title { color: var(--violet); }
+.info-box:nth-of-type(5n+3) .title { color: var(--success); }
+.info-box:nth-of-type(5n+4) .title { color: var(--warn); }
+.info-box:nth-of-type(5n+5) .title { color: var(--text-secondary); }
+
+.info-box:nth-of-type(5n+1) .title::after { background: var(--cyan); }
+.info-box:nth-of-type(5n+2) .title::after { background: var(--violet); }
+.info-box:nth-of-type(5n+3) .title::after { background: var(--success); }
+.info-box:nth-of-type(5n+4) .title::after { background: var(--warn); }
+
+/* --------------------------------------------------------------------------
+   10. ACTIONS
+   -------------------------------------------------------------------------- */
+.console-container > a {
+  display: inline-block;
+  margin: 8px 12px 0 0;
 }
 
-/* ===== Rendering Animation ===== */
-@keyframes renderBox {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.console-container > a button {
+  position: relative;
+  overflow: hidden;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 13px 22px;
+  border-radius: var(--radius-sm);
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out),
+    background-position 0.5s var(--ease-out), border-color 0.2s var(--ease-out), color 0.2s var(--ease-out);
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+/* primary: View Model Comparison */
+.console-container > a:nth-of-type(1) button {
+  color: #04070d;
+  background: var(--accent-gradient);
+  background-size: 180% 180%;
+  background-position: 0% 50%;
+  box-shadow: 0 10px 24px -10px rgba(34, 211, 238, 0.4);
 }
 
-/* Optional: blinking cursor effect */
-.best-name::after {
-    content: "▋";
-    color: #00ff9d;
-    animation: blink 1s infinite;
-    margin-left: 4px;
+.console-container > a:nth-of-type(1) button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.35) 48%, transparent 66%);
+  transform: translateX(-120%);
+  transition: transform 0.7s var(--ease-out);
 }
 
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+.console-container > a:nth-of-type(1) button:hover {
+  transform: translateY(-2px);
+  background-position: 100% 50%;
+  box-shadow: 0 16px 30px -10px rgba(139, 92, 246, 0.45);
 }
 
-/* ===== Responsive ===== */
-@media (max-width: 600px) {
-    .models-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    h1 {
-        font-size: 1.4rem;
-    }
+.console-container > a:nth-of-type(1) button:hover::after {
+  transform: translateX(120%);
+}
+
+/* secondary: Back to Prediction Page */
+.console-container > a:nth-of-type(2) button {
+  color: var(--text-primary);
+  background: var(--surface-glass-soft);
+  border: 1px solid var(--border-strong);
+}
+
+.console-container > a:nth-of-type(2) button:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  transform: translateY(-2px);
+}
+
+.console-container > a button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.console-container br {
+  display: none; /* spacing handled by margins above */
+}
+
+/* --------------------------------------------------------------------------
+   11. ANIMATIONS
+   -------------------------------------------------------------------------- */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.models-grid .model-box:nth-child(1) { animation-delay: 0.04s; }
+.models-grid .model-box:nth-child(2) { animation-delay: 0.08s; }
+.models-grid .model-box:nth-child(3) { animation-delay: 0.12s; }
+.models-grid .model-box:nth-child(4) { animation-delay: 0.16s; }
+.models-grid .model-box:nth-child(5) { animation-delay: 0.2s; }
+.models-grid .model-box:nth-child(6) { animation-delay: 0.24s; }
+
+/* --------------------------------------------------------------------------
+   12. RESPONSIVE DESIGN
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .models-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .console-container > a {
+    display: block;
+    margin: 10px 0 0;
+  }
+
+  .console-container > a button {
+    width: 100%;
+  }
+
+  .best-model-box::before {
+    top: 12px;
+    right: 14px;
+  }
+}
+
+@media (max-width: 380px) {
+  .console-container {
+    padding-inline: 12px;
+  }
+
+  .console-body {
+    padding: 14px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   13. ACCESSIBILITY / REDUCED MOTION
+   -------------------------------------------------------------------------- */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.model-box:focus-within {
+  transform: translateY(-4px);
+  border-color: var(--cyan);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .best-model-box {
+    animation: none;
+  }
+
+  .model-box:hover {
+    transform: none;
+  }
 }
