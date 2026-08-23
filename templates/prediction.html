@@ -3,204 +3,546 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+
+    <title>AI Performance Predictor</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/prediction.css') }}">
 </head>
+
 <body>
-    <form action="{{ url_for('prediction.predict') }}" method="POST">
 
-    <label>Attendance Percentage</label>
-    <input
-        type="number"
-        name="attendance_percentage"
-        min="0"
-        max="100"
-        step="0.01"
-        required
-    >
+    <!-- Background Effects -->
+    <div class="background-glow glow-one"></div>
+    <div class="background-glow glow-two"></div>
 
-    <label>Internal Marks</label>
-    <input
-        type="number"
-        name="internal_marks"
-        min="0"
-        max="50"
-        step="0.01"
-        required
-    >
+    <!-- Navigation -->
+    <nav class="navbar">
 
-    <label>Assignment Marks</label>
-    <input
-        type="number"
-        name="assignment_marks"
-        min="0"
-        max="50"
-        step="0.01"
-        required
-    >
+        <div class="brand">
+            <div class="brand-icon">AI</div>
 
-    <label>Study Hours Per Day</label>
-    <input
-        type="number"
-        name="study_hours_per_day"
-        min="0"
-        max="16"
-        step="0.01"
-        required
-    >
+            <div>
+                <h2>Student<span>AI</span></h2>
+                <p>Performance Analytics</p>
+            </div>
+        </div>
 
-    <label>Previous SGPA</label>
-    <input
-        type="number"
-        name="previous_sgpa"
-        min="0"
-        max="10"
-        step="0.01"
-        required
-    >
+        <div class="nav-actions">
 
-    <label>Backlogs</label>
-    <input
-        type="number"
-        name="backlogs"
-        min="0"
-        max="10"
-        step="1"
-        required
-    >
+            <a href="{{ url_for('model.models_page') }}"
+               class="nav-link">
+                📊 Model Analysis
+            </a>
 
-    <label>Lab Performance</label>
-    <input
-        type="number"
-        name="lab_performance"
-        min="0"
-        max="100"
-        step="0.01"
-        required
-    >
+            <a href="{{ url_for('auth.logout') }}"
+               class="logout-btn">
+                Logout
+            </a>
 
-    <label>Participation</label>
-    <input
-        type="number"
-        name="participation"
-        min="0"
-        max="100"
-        step="0.01"
-        required
-    >
+        </div>
 
-    <button type="submit">
-        Predict Performance
-    </button>
-
-</form>
-{% if prediction %}
-
-    <h2>Predicted Performance</h2>
-
-    <h1>{{ prediction }}</h1>
-
-    <p>Model Used: {{ model_name }}</p>
-
-{% endif %}
+    </nav>
 
 
-<!-- #================================================
-# Recommendation Section
-#=============================================== -->
+    <!-- Main Container -->
+    <main class="main-container">
 
-{% if recommendations %}
+        <!-- Hero Section -->
+        <section class="hero-section">
 
-<div class="recommendations">
+            <div class="hero-content">
 
-    <h2>💡 Personalized Recommendations</h2>
+                <div class="status-badge">
+                    <span class="status-dot"></span>
+                    MACHINE LEARNING ENGINE ACTIVE
+                </div>
 
-    <ul>
+                <h1>
+                    Predict Student
+                    <span>Performance</span>
+                </h1>
 
-        {% for recommendation in recommendations %}
+                <p>
+                    Analyze academic indicators using machine learning
+                    to predict student performance and generate
+                    personalized recommendations.
+                </p>
 
-            <li>{{ recommendation }}</li>
+            </div>
 
-        {% endfor %}
+            <div class="hero-stat">
 
-    </ul>
+                <div class="stat-icon">
+                    ✦
+                </div>
 
-</div>
+                <div>
+                    <strong>AI Powered</strong>
+                    <span>Predictive Analytics</span>
+                </div>
 
-{% endif %}
+            </div>
 
-
-{% if error %}
-
-    <h2>{{ error }}</h2>
-
-    {% if constraint_errors %}
-
-        {% for message in constraint_errors %}
-
-            <p>{{ message }}</p>
-
-        {% endfor %}
-
-    {% endif %}
-
-{% endif %}
-
-<!-- ALL Models Predictions -->
-{% if all_predictions %}
-
-<h2>Model Predictions</h2>
-
-<table border="1">
-
-    <tr>
-        <th>Model</th>
-        <th>Prediction</th>
-    </tr>
-
-    {% for model, result in all_predictions.items() %}
-
-    <tr>
-
-        <td>{{ model }}</td>
-
-        <td>{{ result }}</td>
-
-    </tr>
-
-    {% endfor %}
-
-</table>
-
-{% endif %}
-
-<!-- Recommendations -->
-
-{% if recommendations %}
-
-<h2>💡 Personalized Recommendations</h2>
-
-<ul>
-
-    {% for recommendation in recommendations %}
-
-    <li>
-        {{ recommendation }}
-    </li>
-
-    {% endfor %}
-
-</ul>
-
-{% endif %}
+        </section>
 
 
-<a href="{{ url_for('model.models_page') }}">
-    <button type="button">
-        📊 View Model Analysis
-    </button>
-</a>
+        <!-- Prediction Form Card -->
+        <section class="prediction-card">
 
-<a href="{{ url_for('auth.logout') }}">Logout</a>
+            <div class="card-header">
+
+                <div>
+                    <span class="section-label">
+                        PREDICTION INPUT
+                    </span>
+
+                    <h2>Student Performance Parameters</h2>
+
+                    <p>
+                        Enter the student's academic and behavioral
+                        information to generate a prediction.
+                    </p>
+                </div>
+
+                <div class="input-count">
+                    <strong>08</strong>
+                    <span>Features</span>
+                </div>
+
+            </div>
+
+
+            <form action="{{ url_for('prediction.predict') }}"
+                  method="POST"
+                  class="prediction-form">
+
+
+                <!-- Input Grid -->
+                <div class="input-grid">
+
+
+                    <!-- Attendance -->
+                    <div class="input-group">
+
+                        <label for="attendance_percentage">
+                            <span class="label-icon">◉</span>
+                            Attendance Percentage
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <input
+                                type="number"
+                                id="attendance_percentage"
+                                name="attendance_percentage"
+                                min="0"
+                                max="100"
+                                step="0.01"
+                                placeholder="e.g. 85"
+                                required
+                            >
+
+                            <span class="input-unit">%</span>
+
+                        </div>
+
+                        <small>Valid range: 0 – 100%</small>
+
+                    </div>
+
+
+                    <!-- Internal Marks -->
+                    <div class="input-group">
+
+                        <label for="internal_marks">
+                            <span class="label-icon">◆</span>
+                            Internal Marks
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <input
+                                type="number"
+                                id="internal_marks"
+                                name="internal_marks"
+                                min="0"
+                                max="50"
+                                step="0.01"
+                                placeholder="e.g. 42"
+                                required
+                            >
+
+                            <span class="input-unit">/ 50</span>
+
+                        </div>
+
+                        <small>Maximum internal score: 50</small>
+
+                    </div>
+
+
+                    <!-- Assignment Marks -->
+                    <div class="input-group">
+
+                        <label for="assignment_marks">
+                            <span class="label-icon">◇</span>
+                            Assignment Marks
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <input
+                                type="number"
+                                id="assignment_marks"
+                                name="assignment_marks"
+                                min="0"
+                                max="50"
+                                step="0.01"
+                                placeholder="e.g. 40"
+                                required
+                            >
+
+                            <span class="input-unit">/ 50</span>
+
+                        </div>
+
+                        <small>Maximum assignment score: 50</small>
+
+                    </div>
+
+
+                    <!-- Study Hours -->
+                    <div class="input-group">
+
+                        <label for="study_hours_per_day">
+                            <span class="label-icon">◷</span>
+                            Study Hours Per Day
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <input
+                                type="number"
+                                id="study_hours_per_day"
+                                name="study_hours_per_day"
+                                min="0"
+                                max="16"
+                                step="0.01"
+                                placeholder="e.g. 5"
+                                required
+                            >
+
+                            <span class="input-unit">hrs</span>
+
+                        </div>
+
+                        <small>Daily average study time</small>
+
+                    </div>
+
+
+                    <!-- Previous SGPA -->
+                    <div class="input-group">
+
+                        <label for="previous_sgpa">
+                            <span class="label-icon">★</span>
+                            Previous SGPA
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <input
+                                type="number"
+                                id="previous_sgpa"
+                                name="previous_sgpa"
+                                min="0"
+                                max="10"
+                                step="0.01"
+                                placeholder="e.g. 8.5"
+                                required
+                            >
+
+                            <span class="input-unit">/ 10</span>
+
+                        </div>
+
+                        <small>Previous semester academic score</small>
+
+                    </div>
+
+
+                    <!-- Backlogs -->
+                    <div class="input-group">
+
+                        <label for="backlogs">
+                            <span class="label-icon">!</span>
+                            Backlogs
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <input
+                                type="number"
+                                id="backlogs"
+                                name="backlogs"
+                                min="0"
+                                max="10"
+                                step="1"
+                                placeholder="e.g. 0"
+                                required
+                            >
+
+                            <span class="input-unit">count</span>
+
+                        </div>
+
+                        <small>Number of current backlogs</small>
+
+                    </div>
+
+
+                    <!-- Lab Performance -->
+                    <div class="input-group">
+
+                        <label for="lab_performance">
+                            <span class="label-icon">▣</span>
+                            Lab Performance
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <input
+                                type="number"
+                                id="lab_performance"
+                                name="lab_performance"
+                                min="0"
+                                max="100"
+                                step="0.01"
+                                placeholder="e.g. 80"
+                                required
+                            >
+
+                            <span class="input-unit">%</span>
+
+                        </div>
+
+                        <small>Practical / laboratory performance</small>
+
+                    </div>
+
+
+                    <!-- Participation -->
+                    <div class="input-group">
+
+                        <label for="participation">
+                            <span class="label-icon">◎</span>
+                            Participation
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <input
+                                type="number"
+                                id="participation"
+                                name="participation"
+                                min="0"
+                                max="100"
+                                step="0.01"
+                                placeholder="e.g. 75"
+                                required
+                            >
+
+                            <span class="input-unit">%</span>
+
+                        </div>
+
+                        <small>Classroom participation level</small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Prediction Action -->
+                <div class="prediction-action">
+
+                    <div class="action-info">
+
+                        <div class="secure-icon">
+                            ✓
+                        </div>
+
+                        <div>
+                            <strong>Ready for Analysis</strong>
+                            <span>
+                                Your inputs will be processed by the trained ML model.
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <button type="submit"
+                            class="predict-btn">
+
+                        <span>Run AI Prediction</span>
+                        <span class="arrow">→</span>
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- Error Section -->
+        {% if error %}
+
+        <section class="result-card error-card">
+
+            <div class="result-icon error-icon">
+                !
+            </div>
+
+            <div class="result-content">
+
+                <span class="result-label">
+                    VALIDATION ERROR
+                </span>
+
+                <h2>{{ error }}</h2>
+
+                {% if constraint_errors %}
+
+                <div class="constraint-list">
+
+                    {% for message in constraint_errors %}
+
+                    <div class="constraint-item">
+                        <span>!</span>
+                        {{ message }}
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+        {% endif %}
+
+
+        <!-- Recommendations -->
+        {% if recommendations %}
+
+        <section class="recommendations-card">
+
+            <div class="recommendation-header">
+
+                <div class="recommendation-icon">
+                    ✦
+                </div>
+
+                <div>
+
+                    <span class="result-label">
+                        AI GENERATED INSIGHTS
+                    </span>
+
+                    <h2>Personalized Recommendations</h2>
+
+                    <p>
+                        Based on the student's performance indicators,
+                        the system recommends the following actions.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="recommendation-list">
+
+                {% for recommendation in recommendations %}
+
+                <div class="recommendation-item">
+
+                    <div class="recommendation-number">
+                        {{ loop.index }}
+                    </div>
+
+                    <div class="recommendation-text">
+                        {{ recommendation }}
+                    </div>
+
+                    <div class="recommendation-arrow">
+                        →
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+        {% endif %}
+
+
+        <!-- Bottom Navigation -->
+        <section class="bottom-actions">
+
+            <a href="{{ url_for('model.models_page') }}"
+               class="analysis-card">
+
+                <div class="analysis-icon">
+                    📊
+                </div>
+
+                <div class="analysis-content">
+
+                    <span>EXPLORE</span>
+
+                    <h3>Model Analysis</h3>
+
+                    <p>
+                        Compare model performance, accuracy
+                        and prediction results.
+                    </p>
+
+                </div>
+
+                <div class="analysis-arrow">
+                    →
+                </div>
+
+            </a>
+
+        </section>
+
+
+        <!-- Footer -->
+        <footer>
+
+            <div>
+                <strong>StudentAI</strong>
+                <span> • Predictive Analytics System</span>
+            </div>
+
+            <div>
+                Machine Learning • Explainable AI • Academic Analytics
+            </div>
+
+        </footer>
+
+    </main>
+
 </body>
 </html>
-

@@ -57,7 +57,7 @@ def login():
                 session["username"] = user["username"]
 
                 return redirect(
-    url_for("prediction.predict_page")
+    url_for("auth.dashboard")
 )
 
             else:
@@ -151,3 +151,137 @@ def logout():
     return redirect(
         url_for("auth.login")
     )
+
+
+
+
+
+# ============================================================
+# STUDENT DASHBOARD
+# ============================================================
+
+@auth_bp.route("/dashboard")
+def dashboard():
+
+    # User must be logged in
+    if "user_id" not in session:
+
+        return redirect(
+            url_for("auth.login")
+        )
+
+    connection = None
+    cursor = None
+
+    try:
+
+        connection = get_db_connection()
+
+        cursor = connection.cursor(
+            dictionary=True
+        )
+
+        # Get the student's latest prediction
+        query = """
+            SELECT
+                previous_sgpa,
+                attendance_percentage,
+                backlogs,
+                prediction,
+                created_at
+            FROM prediction_history
+            WHERE user_id = %s
+            ORDER BY created_at DESC
+            LIMIT 1
+        """
+
+        cursor.execute(
+            query,
+            (session["user_id"],)
+        )
+
+        latest_data = cursor.fetchone()
+
+        # ----------------------------------------------------
+        # If student has made a prediction
+        # ----------------------------------------------------
+
+        if latest_data:
+
+            previous_sgpa = latest_data[
+                "previous_sgpa"
+            ]
+
+            attendance = latest_data[
+                "attendance_percentage"
+            ]
+
+            backlogs = latest_data[
+                "backlogs"
+            ]
+
+            latest_prediction = latest_data[
+                "prediction"
+            ]
+
+        # ----------------------------------------------------
+        # If student has NOT made a prediction yet
+        # ----------------------------------------------------
+
+        else:
+
+            previous_sgpa = None
+
+            attendance = None
+
+            backlogs = None
+
+            latest_prediction = None
+
+
+        return render_template(
+
+            "dashboard.html",
+
+            previous_sgpa=previous_sgpa,
+
+            attendance=attendance,
+
+            backlogs=backlogs,
+
+            latest_prediction=latest_prediction,
+
+            username=session.get("username")
+
+        )
+
+    except Exception as error:
+
+        print(
+            "Dashboard database error:",
+            error
+        )
+
+        return render_template(
+
+            "dashboard.html",
+
+            previous_sgpa=None,
+
+            attendance=None,
+
+            backlogs=None,
+
+            latest_prediction=None,
+
+            username=session.get("username")
+
+        )
+
+    finally:
+
+        if cursor:
+            cursor.close()
+
+        if connection:
+            connection.close()

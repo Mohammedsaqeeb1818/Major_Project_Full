@@ -1,29 +1,486 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuccessAI — Predict. Understand. Improve.</title>
+    <meta name="description" content="SuccessAI is an AI-powered academic intelligence platform that predicts student performance and delivers explainable, personalized recommendations.">
 
-    <title>Student Performance Prediction</title>
-    <link
-    rel="stylesheet"
-    href="{{ url_for('static', filename='css/style.css') }}"
->
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-
 <body>
 
-    <h1>Student Performance Prediction</h1>
+    <a href="#main" class="skip-link">Skip to content</a>
 
-    <p>
-        Predict student performance using Machine Learning.
-    </p>
+    <!-- ============================================================
+         NAVBAR
+         ============================================================ -->
+    <nav class="navbar">
+        <div class="nav-inner">
 
-  <a href="{{ url_for('prediction.predict_page') }}">
-    <button type="button">Prediction</button>
-</a>
+            <a href="{{ url_for('home.home') }}" class="brand">
+                <span class="brand-mark">AI</span>
+                Success<span>AI</span>
+            </a>
 
+            <ul class="nav-links" id="navLinks">
+                <li><a href="{{ url_for('home.home') }}">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#technology">Technology</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="{{ url_for('auth.login') }}" class="btn btn-ghost btn-sm">Login</a>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-sm">Get Started</a>
+                <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+                    <span></span>
+                </button>
+            </div>
+
+        </div>
+    </nav>
+
+    <main id="main">
+
+        <!-- ============================================================
+             HERO
+             ============================================================ -->
+        <section class="hero">
+
+            <div class="hero-copy">
+                <span class="eyebrow">Academic Intelligence Platform</span>
+                <h1>Predict. <span class="accent">Understand.</span> Improve.</h1>
+                <p class="hero-sub">AI-powered student performance prediction and personalized academic insights.</p>
+                <p class="hero-desc">
+                    SuccessAI analyzes academic performance, attendance, study habits, laboratory
+                    performance, participation and other student indicators to predict performance
+                    and provide actionable, explainable recommendations.
+                </p>
+
+                <div class="hero-actions">
+                    <!-- Required Flask route — do not replace with a static URL -->
+                    <a href="{{ url_for('prediction.predict_page') }}" class="btn btn-primary">
+                        Start Prediction →
+                    </a>
+                    <a href="#about" class="btn btn-ghost">Explore SuccessAI</a>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="dashboard">
+                    <div class="dash-head">
+                        <div class="dash-title">
+                            SUCCESSAI<br>
+                            <strong>AI Performance Analytics</strong>
+                        </div>
+                        <div class="dash-dots"><span></span><span></span><span></span></div>
+                    </div>
+
+                    <div class="dash-predicted">
+                        <div class="confidence-ring" style="--pct:94;">
+                            <span data-count="94">94%</span>
+                        </div>
+                        <div>
+                            <div class="dash-predicted-label">PREDICTED PERFORMANCE</div>
+                            <div class="dash-predicted-value">EXCELLENT</div>
+                            <div class="dash-predicted-conf">94% confidence</div>
+                        </div>
+                    </div>
+
+                    <div class="dash-metrics">
+                        <div class="dash-metric">
+                            <span class="m-label">Attendance</span>
+                            <span class="m-bar"><span class="m-fill" style="width:85%; --d:0.6s;"></span></span>
+                            <span class="m-val">85%</span>
+                        </div>
+                        <div class="dash-metric">
+                            <span class="m-label">Internal Marks</span>
+                            <span class="m-bar"><span class="m-fill" style="width:84%; --d:0.7s;"></span></span>
+                            <span class="m-val">42/50</span>
+                        </div>
+                        <div class="dash-metric">
+                            <span class="m-label">Study Hours</span>
+                            <span class="m-bar"><span class="m-fill" style="width:55%; --d:0.8s;"></span></span>
+                            <span class="m-val">5 hrs</span>
+                        </div>
+                        <div class="dash-metric">
+                            <span class="m-label">Previous SGPA</span>
+                            <span class="m-bar"><span class="m-fill" style="width:85%; --d:0.9s;"></span></span>
+                            <span class="m-val">8.5</span>
+                        </div>
+                        <div class="dash-metric">
+                            <span class="m-label">Lab Performance</span>
+                            <span class="m-bar"><span class="m-fill" style="width:80%; --d:1.0s;"></span></span>
+                            <span class="m-val">80%</span>
+                        </div>
+                    </div>
+
+                    <div class="dash-insight">
+                        <span class="insight-icon">✦</span>
+                        <p><span class="typewriter">"Strong academic indicators detected."</span></p>
+                    </div>
+
+                    <div class="dash-note">Illustrative preview — not live model output</div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ============================================================
+             STATS BAR
+             ============================================================ -->
+        <section class="stats-bar">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-num" data-target="8">0</div>
+                    <div class="stat-label">Academic Features</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num" data-target="5">0</div>
+                    <div class="stat-label">Machine Learning Models</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">AI</div>
+                    <div class="stat-label">Personalized Insights</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">XAI</div>
+                    <div class="stat-label">Explainable Predictions</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             WHAT IS SUCCESSAI
+             ============================================================ -->
+        <section class="section" id="about">
+            <div class="section-inner">
+                <div class="section-head">
+                    <span class="eyebrow">The Platform</span>
+                    <h2>Turning Student Data Into Academic Intelligence</h2>
+                    <p>
+                        SuccessAI is a final-year academic project that applies machine learning to
+                        real student indicators — attendance, marks, study habits and lab performance —
+                        to forecast outcomes and explain exactly why, so students and educators can act
+                        on the result, not just read it.
+                    </p>
+                </div>
+
+                <div class="card-grid">
+                    <div class="info-card">
+                        <div class="card-icon">◈</div>
+                        <h3>Performance Prediction</h3>
+                        <p>Classifies expected student performance from academic and behavioral indicators using a trained ML model.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">⌘</div>
+                        <h3>Machine Learning</h3>
+                        <p>Trained and compared across five classification algorithms to select the strongest performer.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">✦</div>
+                        <h3>Personalized Recommendations</h3>
+                        <p>Generates targeted, actionable suggestions based on each student's specific indicators.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">◎</div>
+                        <h3>Explainable AI</h3>
+                        <p>Surfaces which features drove a prediction, so the result is transparent rather than a black box.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             HOW IT WORKS
+             ============================================================ -->
+        <section class="section section-alt" id="how-it-works">
+            <div class="section-inner">
+                <div class="section-head">
+                    <span class="eyebrow">Process</span>
+                    <h2>From Raw Data to a Clear Prediction</h2>
+                    <p>Five stages carry a student's information from form input to a personalized, explainable result.</p>
+                </div>
+
+                <div class="timeline">
+                    <div class="timeline-step">
+                        <div class="step-num">01</div>
+                        <h4>Student Data</h4>
+                        <p>Attendance, marks, study hours and more are entered.</p>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="step-num">02</div>
+                        <h4>Data Processing</h4>
+                        <p>Inputs are validated, imputed and scaled for the model.</p>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="step-num">03</div>
+                        <h4>Machine Learning</h4>
+                        <p>The trained classifier evaluates the processed indicators.</p>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="step-num">04</div>
+                        <h4>Performance Prediction</h4>
+                        <p>A performance category is produced with explainable reasoning.</p>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="step-num">05</div>
+                        <h4>Recommendations</h4>
+                        <p>Personalized, actionable guidance is generated from the result.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             FEATURES
+             ============================================================ -->
+        <section class="section" id="features">
+            <div class="section-inner">
+                <div class="section-head">
+                    <span class="eyebrow">Capabilities</span>
+                    <h2>Everything the Model Looks At</h2>
+                    <p>SuccessAI evaluates eight academic and behavioral indicators across four functional areas.</p>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="info-card span-2">
+                        <div class="card-icon">▣</div>
+                        <h3>Academic Analysis</h3>
+                        <p>Core academic record used to establish baseline performance.</p>
+                        <div class="tag-row">
+                            <span class="tag">Attendance</span>
+                            <span class="tag">Internal Marks</span>
+                            <span class="tag">Assignment Marks</span>
+                            <span class="tag">Previous SGPA</span>
+                            <span class="tag">Backlogs</span>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">◷</div>
+                        <h3>Learning Behavior</h3>
+                        <p>Day-to-day engagement signals that shape outcomes.</p>
+                        <div class="tag-row">
+                            <span class="tag">Study Hours</span>
+                            <span class="tag">Participation</span>
+                            <span class="tag">Lab Performance</span>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">◈</div>
+                        <h3>Predictive Analytics</h3>
+                        <p>Machine-learning based classification of expected performance, trained on real academic data.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">◎</div>
+                        <h3>Explainable AI</h3>
+                        <p>Shows why a prediction was made by ranking the indicators that influenced it most.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">✦</div>
+                        <h3>Personalized Recommendations</h3>
+                        <p>Turns each prediction into specific next steps, tailored to that student's profile.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             MACHINE LEARNING MODELS
+             ============================================================ -->
+        <section class="section section-alt" id="technology">
+            <div class="section-inner">
+                <div class="section-head">
+                    <span class="eyebrow">Under the Hood</span>
+                    <h2>Powered by Machine Learning</h2>
+                    <p>Five classification models are trained and benchmarked; the strongest performer is used for live predictions.</p>
+                </div>
+
+                <div class="model-grid">
+                    <div class="model-card">
+                        <div class="model-glyph">DT</div>
+                        <h4>Decision Tree</h4>
+                        <p>Rule-based tree structure</p>
+                    </div>
+                    <div class="model-card">
+                        <div class="model-glyph">KNN</div>
+                        <h4>K-Nearest Neighbors</h4>
+                        <p>Similarity-based classification</p>
+                    </div>
+                    <div class="model-card">
+                        <div class="model-glyph">LR</div>
+                        <h4>Logistic Regression</h4>
+                        <p>Feature-relationship modeling</p>
+                    </div>
+                    <div class="model-card">
+                        <div class="model-glyph">RF</div>
+                        <h4>Random Forest</h4>
+                        <p>Ensemble of decision trees</p>
+                    </div>
+                    <div class="model-card">
+                        <div class="model-glyph">SVM</div>
+                        <h4>Support Vector Machine</h4>
+                        <p>Optimal boundary separation</p>
+                    </div>
+                </div>
+
+                <div class="ml-cta">
+                    <!-- Existing Flask model-analysis route -->
+                    <a href="{{ url_for('model.models_page') }}" class="btn btn-ghost">View Model Analysis →</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             EXPLAINABLE AI
+             ============================================================ -->
+        <section class="section">
+            <div class="section-inner xai-panel">
+                <div class="xai-copy">
+                    <span class="eyebrow">Explainable AI</span>
+                    <h2>Don't Just Get a Prediction. Understand It.</h2>
+                    <p>
+                        SuccessAI helps users understand which features influenced the prediction,
+                        instead of returning an opaque result. Each factor is ranked by its relative
+                        contribution to the outcome.
+                    </p>
+                    <div class="xai-callout">
+                        "SuccessAI helps users understand which features influenced the prediction."
+                    </div>
+                </div>
+
+                <div class="shap-viz">
+                    <span class="viz-label">REPRESENTATIVE FEATURE IMPORTANCE</span>
+
+                    <div class="shap-row">
+                        <div class="shap-top"><span class="f-name">Previous SGPA</span><span class="f-val">High</span></div>
+                        <div class="shap-track"><div class="shap-fill" data-width="92"></div></div>
+                    </div>
+                    <div class="shap-row">
+                        <div class="shap-top"><span class="f-name">Attendance</span><span class="f-val">High</span></div>
+                        <div class="shap-track"><div class="shap-fill" data-width="74"></div></div>
+                    </div>
+                    <div class="shap-row">
+                        <div class="shap-top"><span class="f-name">Internal Marks</span><span class="f-val">Moderate</span></div>
+                        <div class="shap-track"><div class="shap-fill" data-width="58"></div></div>
+                    </div>
+                    <div class="shap-row">
+                        <div class="shap-top"><span class="f-name">Lab Performance</span><span class="f-val">Moderate</span></div>
+                        <div class="shap-track"><div class="shap-fill" data-width="42"></div></div>
+                    </div>
+                    <div class="shap-row">
+                        <div class="shap-top"><span class="f-name">Study Hours</span><span class="f-val">Low</span></div>
+                        <div class="shap-track"><div class="shap-fill" data-width="30"></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             FINAL CTA
+             ============================================================ -->
+        <section class="final-cta">
+            <div class="final-cta-box">
+                <h2>Ready to understand student performance?</h2>
+                <p>Turn academic data into meaningful insights with SuccessAI.</p>
+                <!-- Required Flask route — do not replace with a static URL -->
+                <a href="{{ url_for('prediction.predict_page') }}" class="btn btn-primary">Start Your Prediction →</a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ============================================================
+         FOOTER
+         ============================================================ -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="{{ url_for('home.home') }}" class="brand">
+                    <span class="brand-mark">AI</span>
+                    Success<span>AI</span>
+                </a>
+                <p>AI-powered student performance analytics — predictive, explainable and personalized.</p>
+            </div>
+            <div class="footer-col">
+                <h5>Navigation</h5>
+                <a href="{{ url_for('home.home') }}">Home</a>
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="{{ url_for('model.models_page') }}">Model Analysis</a>
+                <a href="{{ url_for('auth.login') }}">Login</a>
+            </div>
+            <div class="footer-col">
+                <h5>Technology</h5>
+                <span>Machine Learning</span>
+                <span>Explainable AI</span>
+                <span>Predictive Analytics</span>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 SuccessAI</span>
+            <span>Predictive Analytics for Student Performance Using Machine Learning</span>
+        </div>
+    </footer>
+
+    <!-- ============================================================
+         AI ASSISTANT WIDGET
+         ============================================================ -->
+    <button class="assistant-btn" id="assistantBtn" aria-label="Open SuccessAI Assistant" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2a5 5 0 0 0-5 5v2a5 5 0 0 0 10 0V7a5 5 0 0 0-5-5Z"/>
+            <path d="M8 21h8M12 17v4"/>
+        </svg>
+    </button>
+
+    <div class="assistant-panel" id="assistantPanel" role="dialog" aria-label="SuccessAI Assistant">
+        <div class="assistant-head">
+            <span class="a-icon">AI</span>
+            <div>
+                <strong>SuccessAI Assistant</strong>
+                <span>● Online</span>
+            </div>
+            <button class="assistant-close" id="assistantClose" aria-label="Close assistant">✕</button>
+        </div>
+
+        <div class="assistant-body" id="assistantBody">
+            <div class="msg msg-bot">Hi! I'm your SuccessAI assistant. How can I help you?</div>
+        </div>
+
+        <div class="quick-actions">
+            <button data-q="How does SuccessAI work?">How does it work?</button>
+            <button data-q="What features are used?">Features used</button>
+            <button data-q="What is Random Forest?">Random Forest</button>
+            <button data-q="What is SHAP?">What is SHAP?</button>
+            <button data-q="Start Prediction">Start Prediction</button>
+            <button data-q="Model Analysis">Model Analysis</button>
+        </div>
+
+        <div class="assistant-input-row">
+            <input type="text" id="assistantInput" placeholder="Ask SuccessAI..." aria-label="Ask SuccessAI">
+            <button class="assistant-send" id="assistantSend" aria-label="Send message">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                    <path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7Z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!--
+        NAVIGATION URLS PASSED TO THE ASSISTANT SCRIPT
+        These are rendered server-side by Jinja so assistant.js (a static
+        file, which cannot read Jinja tags) receives the real Flask URLs.
+    -->
+    <script>
+        window.SUCCESSAI_ROUTES = {
+            home: "{{ url_for('home.home') }}",
+            login: "{{ url_for('auth.login') }}",
+            prediction: "{{ url_for('prediction.predict_page') }}",
+            models: "{{ url_for('model.models_page') }}"
+        };
+    </script>
+    <script src="{{ url_for('static', filename='js/assistant.js') }}"></script>
 </body>
-
 </html>

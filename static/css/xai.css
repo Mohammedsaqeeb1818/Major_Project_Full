@@ -1,0 +1,81 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.xai-container {
+    width: 80%;
+    max-width: 900px;
+    margin: 50px auto;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.prediction-box,
+.explanation-box,
+.recommendation-box {
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 15px;
+    border: 1px solid #ddd;
+}
+
+.prediction-box {
+    text-align: center;
+}
+
+.prediction-box h2 {
+    font-size: 35px;
+    margin: 10px;
+}
+
+.factor {
+    margin-bottom: 25px;
+}
+
+.factor-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.bar {
+    width: 100%;
+    height: 15px;
+    background: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    width: var(--bar-width);
+    height: 100%;
+    background: #333;
+    border-radius: 10px;
+}
+
+.factor p {
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.recommendation-box p {
+    margin: 10px 0;
+}
+
+.back-button {
+    display: block;
+    width: fit-content;
+    margin: 30px auto;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 8px;
+    background: #222;
+    color: white;
+}
+

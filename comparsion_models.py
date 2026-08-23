@@ -3,6 +3,7 @@ import joblib
 import os
 
 
+
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.impute import SimpleImputer
@@ -12,6 +13,9 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
+from sklearn.svm import SVC
+from sklearn.calibration import CalibratedClassifierCV
+
 
 from sklearn.metrics import (
     accuracy_score,
@@ -230,12 +234,15 @@ models = {
         ),
 
     "SVM":
-        SVC(
-            kernel="rbf",
-            C=1.0,
-            gamma="scale",
-            random_state=42
-        )
+        CalibratedClassifierCV(
+            SVC(
+                kernel="rbf",
+                C=1.0,
+                gamma="scale",
+                random_state=42
+                ),
+        ensemble=False
+    )
 }
 
 
@@ -384,6 +391,66 @@ best_result = results[
 
 
 # ============================================================
+# 13A. CONFIDENCE SCORE
+# ============================================================
+
+# Select the correct test data
+# Scaled data is used for KNN, Logistic Regression and SVM.
+# Original data is used for Decision Tree and Random Forest.
+
+if best_model_name in [
+    "KNN",
+    "Logistic Regression",
+    "SVM"
+]:
+
+    confidence_X_test = X_test_scaled
+
+else:
+
+    confidence_X_test = X_test
+
+
+# Get probability for each performance class
+probabilities = best_model.predict_proba(
+    confidence_X_test
+)
+
+
+# Highest probability is the confidence
+confidence_scores = probabilities.max(
+    axis=1
+)
+
+
+# Convert to percentage
+confidence_percentage = (
+    confidence_scores * 100
+)
+
+
+print("\n========================================")
+print("CONFIDENCE SCORE")
+print("========================================")
+
+print(
+    f"Average Confidence : "
+    f"{confidence_percentage.mean():.2f}%"
+)
+
+print(
+    f"Minimum Confidence : "
+    f"{confidence_percentage.min():.2f}%"
+)
+
+print(
+    f"Maximum Confidence : "
+    f"{confidence_percentage.max():.2f}%"
+)
+
+
+
+# ============================================================
 # 14. DISPLAY BEST MODEL
 # ============================================================
 
@@ -452,6 +519,26 @@ else:
 
     best_predictions = best_model.predict(
         X_test
+    )
+
+
+# ============================================================
+# 15A. SAMPLE PREDICTIONS WITH CONFIDENCE
+# ============================================================
+
+print("\nSample Predictions with Confidence:")
+
+for i in range(10):
+
+    predicted_label = label_encoder.inverse_transform(
+        [best_predictions[i]]
+    )[0]
+
+    print(
+        f"Student {i + 1}: "
+        f"Prediction = {predicted_label}, "
+        f"Confidence = "
+        f"{confidence_percentage[i]:.2f}%"
     )
 
 

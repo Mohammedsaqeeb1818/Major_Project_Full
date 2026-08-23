@@ -9,6 +9,9 @@ from flask import (
 
 import pandas as pd
 import joblib
+import numpy as np
+
+from utils.database import get_db_connection
 
 from utils.model_loader import (
     model,
@@ -21,6 +24,10 @@ from utils.model_loader import (
 
 from utils.recommendations import (
     generate_recommendations
+)
+
+from utils.explainable_ai import (
+    generate_explanation
 )
 
 
@@ -250,12 +257,16 @@ def predict():
             prediction_encoded = model.predict(
                 input_scaled
             )
+             # Data actually given to the model
+            xai_input = input_scaled
 
         else:
 
             prediction_encoded = model.predict(
                 input_imputed
             )
+             # Data actually given to the model
+            xai_input = input_imputed
 
 
         # ====================================================
@@ -266,9 +277,130 @@ def predict():
             prediction_encoded
         )[0]
 
-# ============================================================
-# PREDICT USING ALL 5 MODELS
-# ============================================================
+        # ============================================================
+        # SAVE PREDICTION HISTORY
+        # ============================================================
+
+        connection = None
+        cursor = None
+
+        try:
+
+            connection = get_db_connection()
+
+            cursor = connection.cursor()
+
+            query = """
+        INSERT INTO prediction_history
+        (
+            user_id,
+            previous_sgpa,
+            attendance_percentage,
+            backlogs,
+            prediction
+        )
+        VALUES (%s, %s, %s, %s, %s)
+    """
+
+            cursor.execute(
+                query,
+                (
+                    session["user_id"],
+                    previous_sgpa,
+                    attendance,
+                    int(backlogs),
+                    prediction
+                )
+            )
+
+            connection.commit()
+
+        except Exception as db_error:
+
+            print(
+                "Prediction history save error:",
+                db_error
+            )
+
+        finally:
+
+            if cursor:
+                cursor.close()
+
+            if connection:
+                connection.close()
+
+
+       
+
+
+
+
+        # ====================================================
+        # LOAD BACKGROUND DATA FOR SHAP
+        # ====================================================
+
+        background_df = pd.read_csv(
+            "data/student_performance_project_100k.csv"
+        )
+
+        # Keep only the features used by the model
+        background_df = background_df[
+            FEATURE_COLUMNS
+        ]
+
+        # Use a small representative sample
+        background_df = background_df.sample(
+            n=100,
+            random_state=42
+        )
+
+        # ====================================================
+        # PREPROCESS BACKGROUND DATA
+        # ====================================================
+
+        background_imputed = imputer.transform(
+            background_df
+        )
+
+        background_imputed = pd.DataFrame(
+            background_imputed,
+            columns=FEATURE_COLUMNS
+        )
+
+
+        # ====================================================
+        # SCALE BACKGROUND DATA IF REQUIRED
+        # ====================================================
+
+        if best_model_name in [
+            "KNN",
+            "Logistic Regression",
+            "SVM"
+        ]:
+
+            background_xai = scaler.transform(
+                background_imputed
+            )
+
+        else:
+
+            background_xai = background_imputed
+
+    # ====================================================
+    # GENERATE EXPLAINABLE AI EXPLANATION
+    # ====================================================
+
+        explanation = generate_explanation(
+            model,
+            xai_input,
+            FEATURE_COLUMNS,
+            background_xai
+        )
+
+        # ============================================================
+        # PREDICT USING ALL 5 MODELS
+        # ============================================================
 
         all_predictions = {}
 
@@ -293,7 +425,14 @@ def predict():
 
         for model_name, model_path in model_files.items():
 
-            current_model = joblib.load(model_path)
+            # Load current model
+            current_model = joblib.load(
+                model_path
+            )
+
+            # ========================================================
+            # PREPARE INPUT FOR CURRENT MODEL
+            # ========================================================
 
             if model_name in [
                 "KNN",
@@ -301,30 +440,52 @@ def predict():
                 "SVM"
             ]:
 
-                input_scaled = scaler.transform(
+                current_input = scaler.transform(
                     input_imputed
-                )
-
-                encoded_prediction = current_model.predict(
-                    input_scaled
                 )
 
             else:
 
-                encoded_prediction = current_model.predict(
-                    input_imputed
-                )
+                current_input = input_imputed
 
+            # ========================================================
+            # MAKE PREDICTION
+            # ========================================================
+
+            encoded_prediction = current_model.predict(
+                current_input
+            )
+
+            # Convert encoded prediction to original class
             current_prediction = label_encoder.inverse_transform(
                 encoded_prediction
             )[0]
 
-            all_predictions[model_name] = current_prediction
+            # Store prediction
+            all_predictions[
+                model_name
+            ] = current_prediction
 
-            recommendations = generate_recommendations(
+        # ====================================================
+        # STORE CURRENT STUDENT MODEL PREDICTIONS
+        # ====================================================
+
+        session["all_predictions"] = all_predictions
+
+
+
+
+# ====================================================
+# GENERATE RECOMMENDATIONS
+# ====================================================
+
+        recommendations = generate_recommendations(
             input_data,
             prediction
         )
+
+
+
 
 
     
@@ -334,15 +495,15 @@ def predict():
     # ====================================================
 
         return render_template(
-        "prediction.html",
+        "xai.html",
 
         prediction=prediction,
-
         model_name=best_model_name,
-
         recommendations=recommendations,
+        all_predictions=all_predictions,
+        explanation=explanation
 
-        all_predictions=all_predictions
+        
 )
 
 

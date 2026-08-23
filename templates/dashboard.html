@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SuccessAI | Student Dashboard</title>
+
+    <!-- Dashboard CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+</head>
+
+
+<body>
+
+<div class="dashboard-container">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                ✦
+            </div>
+
+            <div>
+
+                <h2>SuccessAI</h2>
+
+                <span>
+                    Student Intelligence
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <nav class="navigation">
+
+            <a href="#"
+               class="nav-item active">
+
+                <span class="nav-icon">⌂</span>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a href="{{ url_for('prediction.predict_page') }}"
+               class="nav-item">
+
+                <span class="nav-icon">◈</span>
+
+                <span>
+                    Predict Performance
+                </span>
+
+            </a>
+
+
+            <a href="{{ url_for('model.models_page') }}"
+               class="nav-item">
+
+                <span class="nav-icon">▦</span>
+
+                <span>
+                    Model Analysis
+                </span>
+
+            </a>
+
+
+            <a href="#insights"
+               class="nav-item">
+
+                <span class="nav-icon">✦</span>
+
+                <span>
+                    AI Insights
+                </span>
+
+            </a>
+
+
+            <a href="#recommendations"
+               class="nav-item">
+
+                <span class="nav-icon">◇</span>
+
+                <span>
+                    Recommendations
+                </span>
+
+            </a>
+
+
+            <a href="#overview"
+               class="nav-item">
+
+                <span class="nav-icon">◫</span>
+
+                <span>
+                    Performance Overview
+                </span>
+
+            </a>
+
+        </nav>
+
+
+        <!-- Sidebar Bottom -->
+
+        <div class="sidebar-bottom">
+
+            <a href="{{ url_for('auth.logout') }}"
+               class="logout-link">
+
+                <span class="nav-icon">↪</span>
+
+                <span>
+                    Logout
+                </span>
+
+            </a>
+
+
+            <button id="themeToggle"
+                    class="theme-toggle"
+                    type="button"
+                    aria-label="Toggle light and dark mode">
+
+                <span class="toggle-moon">
+                    ☾
+                </span>
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main-content">
+
+
+        <!-- =================================================
+             TOP BAR
+        ================================================== -->
+
+        <header class="topbar">
+
+            <div class="page-title">
+
+                <span class="terminal-symbol">
+                    &gt;
+                </span>
+
+                <span>
+                    Student Dashboard
+                </span>
+
+            </div>
+
+
+            <div class="user-area">
+
+                <div class="status-indicator"></div>
+
+                <span class="online-text">
+                    SYSTEM ONLINE
+                </span>
+
+
+                <div class="user-profile">
+
+                    <div class="avatar">
+                        {{ username[0]|upper if username else 'S' }}
+                    </div>
+
+                    <div class="user-info">
+
+                        <strong>
+                            {{ username if username else 'Student' }}
+                        </strong>
+
+                        <span>
+                            Performance Portal
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             WELCOME SECTION
+        ================================================== -->
+
+        <section class="welcome-section">
+
+            <div class="welcome-content">
+
+                <span class="welcome-label">
+                    // STUDENT PERFORMANCE INTELLIGENCE
+                </span>
+
+                <h1>
+                    Welcome to
+                    <span>SuccessAI</span>
+                </h1>
+
+                <p>
+                    Analyze your academic performance,
+                    explore machine learning predictions,
+                    and discover actionable insights
+                    to improve your academic journey.
+                </p>
+
+            </div>
+
+
+            <div class="welcome-visual">
+
+                <div class="ai-orb">
+
+                    <div class="orb-inner">
+                        AI
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             QUICK STATISTICS
+        ================================================== -->
+
+        <section class="stats-grid"
+                 id="overview">
+
+
+            <!-- =================================================
+                 PREVIOUS SGPA
+            ================================================== -->
+
+            <div class="stat-card">
+
+                <div class="stat-card-top">
+
+                    <div class="stat-icon">
+                        GPA
+                    </div>
+
+                    <span class="stat-label">
+                        ACADEMIC
+                    </span>
+
+                </div>
+
+
+                <div class="stat-value">
+
+                    {% if previous_sgpa is not none %}
+
+                        {{ "%.2f"|format(previous_sgpa) }}
+
+                    {% else %}
+
+                        --
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="stat-title">
+                    Previous SGPA
+                </div>
+
+
+                <div class="stat-description">
+
+                    {% if previous_sgpa is not none %}
+
+                        Previous academic performance
+
+                    {% else %}
+
+                        No prediction data available
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 ATTENDANCE
+            ================================================== -->
+
+            <div class="stat-card">
+
+                <div class="stat-card-top">
+
+                    <div class="stat-icon">
+                        %
+                    </div>
+
+                    <span class="stat-label">
+                        ATTENDANCE
+                    </span>
+
+                </div>
+
+
+                <div class="stat-value">
+
+                    {% if attendance is not none %}
+
+                        {{ "%.2f"|format(attendance) }}%
+
+                    {% else %}
+
+                        --
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="stat-title">
+                    Attendance
+                </div>
+
+
+                <div class="stat-description">
+
+                    {% if attendance is not none %}
+
+                        Overall attendance percentage
+
+                    {% else %}
+
+                        No attendance data available
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 BACKLOGS
+            ================================================== -->
+
+            <div class="stat-card">
+
+                <div class="stat-card-top">
+
+                    <div class="stat-icon">
+                        !
+                    </div>
+
+                    <span class="stat-label">
+                        ACADEMIC
+                    </span>
+
+                </div>
+
+
+                <div class="stat-value">
+
+                    {% if backlogs is not none %}
+
+                        {{ backlogs|int }}
+
+                    {% else %}
+
+                        --
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="stat-title">
+                    Backlogs
+                </div>
+
+
+                <div class="stat-description">
+
+                    {% if backlogs is not none %}
+
+                        Current active backlogs
+
+                    {% else %}
+
+                        No backlog data available
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 AI PREDICTION
+            ================================================== -->
+
+            <div class="stat-card highlight-card">
+
+                <div class="stat-card-top">
+
+                    <div class="stat-icon">
+                        AI
+                    </div>
+
+                    <span class="stat-label">
+                        ML MODEL
+                    </span>
+
+                </div>
+
+
+                <div class="stat-value prediction-value">
+
+                    {% if latest_prediction %}
+
+                        {{ latest_prediction }}
+
+                    {% else %}
+
+                        --
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="stat-title">
+                    Latest Prediction
+                </div>
+
+
+                <div class="stat-description">
+
+                    {% if latest_prediction %}
+
+                        Latest machine learning prediction
+
+                    {% else %}
+
+                        Make a prediction to view result
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             PREDICTION HERO
+        ================================================== -->
+
+        <section class="prediction-hero">
+
+            <div class="prediction-content">
+
+                <span class="section-code">
+                    // AI PERFORMANCE ENGINE
+                </span>
+
+                <h2>
+                    Predict Your Academic Performance
+                </h2>
+
+                <p>
+                    Enter your academic information and let
+                    SuccessAI analyze your performance using
+                    machine learning.
+                </p>
+
+
+                <div class="prediction-features">
+
+                    <span>
+                        ✓ Machine Learning
+                    </span>
+
+                    <span>
+                        ✓ Explainable AI
+                    </span>
+
+                    <span>
+                        ✓ Personalized Insights
+                    </span>
+
+                </div>
+
+
+                <a href="{{ url_for('prediction.predict_page') }}"
+                   class="primary-button">
+
+                    <span>
+                        ◈
+                    </span>
+
+                    Predict My Performance
+
+                    <span>
+                        →
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <div class="prediction-visual">
+
+                <div class="prediction-screen">
+
+                    <div class="screen-header">
+
+                        <span>
+                            SUCCESSAI://PREDICT
+                        </span>
+
+                        <span>
+                            ●
+                        </span>
+
+                    </div>
+
+
+                    <div class="screen-body">
+
+                        <div class="screen-line">
+
+                            <span>
+                                MODEL
+                            </span>
+
+                            <strong>
+                                RANDOM FOREST
+                            </strong>
+
+                        </div>
+
+
+                        <div class="screen-line">
+
+                            <span>
+                                STATUS
+                            </span>
+
+                            <strong>
+                                READY
+                            </strong>
+
+                        </div>
+
+
+                        <div class="screen-line">
+
+                            <span>
+                                FEATURES
+                            </span>
+
+                            <strong>
+                                08
+                            </strong>
+
+                        </div>
+
+
+                        <div class="screen-line">
+
+                            <span>
+                                ANALYSIS
+                            </span>
+
+                            <strong>
+                                AVAILABLE
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             LOWER GRID
+        ================================================== -->
+
+        <section class="dashboard-grid">
+
+
+            <!-- =================================================
+                 PERFORMANCE OVERVIEW
+            ================================================== -->
+
+            <div class="dashboard-card performance-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <span class="card-code">
+                            // ANALYTICS
+                        </span>
+
+                        <h2>
+                            Performance Overview
+                        </h2>
+
+                    </div>
+
+                    <span class="card-icon">
+                        ◫
+                    </span>
+
+                </div>
+
+
+                <div class="performance-list">
+
+
+                    <!-- Attendance -->
+
+                    <div class="performance-item">
+
+                        <div class="performance-info">
+
+                            <span>
+                                Attendance
+                            </span>
+
+                            <strong>
+
+                                {% if attendance is not none %}
+
+                                    {{ "%.2f"|format(attendance) }}%
+
+                                {% else %}
+
+                                    --
+
+                                {% endif %}
+
+                            </strong>
+
+                        </div>
+
+            <div class="progress-bar">
+                    <div class="progress-fill"
+         style="--progress: {{ attendance or 0 }}%;">
+                    </div>
+            </div>
+
+                    </div>
+
+
+
+                    <!-- Internal Marks -->
+
+                    <div class="performance-item">
+
+                        <div class="performance-info">
+
+                            <span>
+                                Internal Marks
+                            </span>
+
+                            <strong>
+                                --
+                            </strong>
+
+                        </div>
+
+
+                        <div class="progress-bar">
+
+                            <div class="progress-fill"
+                                 style="width: 0%;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Assignment Marks -->
+
+                    <div class="performance-item">
+
+                        <div class="performance-info">
+
+                            <span>
+                                Assignment Marks
+                            </span>
+
+                            <strong>
+                                --
+                            </strong>
+
+                        </div>
+
+
+                        <div class="progress-bar">
+
+                            <div class="progress-fill"
+                                 style="width: 0%;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Lab Performance -->
+
+                    <div class="performance-item">
+
+                        <div class="performance-info">
+
+                            <span>
+                                Lab Performance
+                            </span>
+
+                            <strong>
+                                --
+                            </strong>
+
+                        </div>
+
+
+                        <div class="progress-bar">
+
+                            <div class="progress-fill"
+                                 style="width: 0%;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 AI INSIGHTS
+            ================================================== -->
+
+            <div class="dashboard-card insights-card"
+                 id="insights">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <span class="card-code">
+                            // EXPLAINABLE AI
+                        </span>
+
+                        <h2>
+                            AI Insights
+                        </h2>
+
+                    </div>
+
+                    <span class="card-icon">
+                        ✦
+                    </span>
+
+                </div>
+
+
+                <div class="insight-list">
+
+                    <div class="insight-item">
+
+                        <div class="insight-symbol positive">
+                            +
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Strong Academic Factors
+                            </strong>
+
+                            <p>
+                                Make a prediction to identify
+                                the features influencing your
+                                result.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="insight-item">
+
+                        <div class="insight-symbol warning">
+                            !
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Improvement Areas
+                            </strong>
+
+                            <p>
+                                Your AI analysis will highlight
+                                areas that require attention.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="insight-item">
+
+                        <div class="insight-symbol info">
+                            i
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Explainable Prediction
+                            </strong>
+
+                            <p>
+                                Understand why the model
+                                generated your prediction.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             RECOMMENDATIONS
+        ================================================== -->
+
+        <section class="dashboard-card recommendations-card"
+                 id="recommendations">
+
+            <div class="card-header">
+
+                <div>
+
+                    <span class="card-code">
+                        // AI GUIDANCE SYSTEM
+                    </span>
+
+                    <h2>
+                        Personalized Recommendations
+                    </h2>
+
+                </div>
+
+                <span class="card-icon">
+                    ◇
+                </span>
+
+            </div>
+
+
+            <div class="recommendation-grid">
+
+
+                <div class="recommendation-item">
+
+                    <div class="recommendation-number">
+                        01
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Improve Study Habits
+                        </h3>
+
+                        <p>
+                            Maintain a consistent study
+                            schedule and focus on areas
+                            where your performance is weak.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="recommendation-item">
+
+                    <div class="recommendation-number">
+                        02
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Monitor Attendance
+                        </h3>
+
+                        <p>
+                            Regular attendance can contribute
+                            to better academic performance
+                            and consistent learning.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="recommendation-item">
+
+                    <div class="recommendation-number">
+                        03
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Strengthen Practical Skills
+                        </h3>
+
+                        <p>
+                            Focus on laboratory work and
+                            practical implementation of
+                            concepts.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             MODEL ANALYSIS
+        ================================================== -->
+
+        <section class="model-analysis-card">
+
+            <div>
+
+                <span class="card-code">
+                    // MACHINE LEARNING
+                </span>
+
+                <h2>
+                    Compare Machine Learning Models
+                </h2>
+
+                <p>
+                    Explore the performance of Decision Tree,
+                    KNN, Logistic Regression, Random Forest
+                    and SVM.
+                </p>
+
+            </div>
+
+
+            <a href="{{ url_for('model.models_page') }}"
+               class="secondary-button">
+
+                View Model Analysis
+
+                <span>
+                    →
+                </span>
+
+            </a>
+
+        </section>
+
+
+
+        <!-- =================================================
+             AI ASSISTANT
+        ================================================== -->
+
+        <button class="ai-assistant"
+                type="button"
+                aria-label="SuccessAI Assistant">
+
+            <span class="assistant-icon">
+                ✦
+            </span>
+
+            <span class="assistant-text">
+                SuccessAI
+            </span>
+
+        </button>
+
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <footer class="dashboard-footer">
+
+            <span>
+                SUCCESSAI // STUDENT PERFORMANCE INTELLIGENCE
+            </span>
+
+            <span>
+                MACHINE LEARNING • XAI • ANALYTICS
+            </span>
+
+        </footer>
+
+
+    </main>
+
+</div>
+
+
+<!-- =========================================================
+     LIGHT / DARK MODE
+========================================================= -->
+
+<script>
+
+    const toggle =
+        document.getElementById('themeToggle');
+
+    const root =
+        document.documentElement;
+
+    const saved =
+        localStorage.getItem('successai-theme');
+
+
+    if (saved) {
+
+        root.setAttribute(
+            'data-theme',
+            saved
+        );
+
+    }
+
+
+    toggle.addEventListener(
+        'click',
+        () => {
+
+            const isLight =
+                root.getAttribute('data-theme') === 'light';
+
+            const next =
+                isLight ? 'dark' : 'light';
+
+
+            if (next === 'dark') {
+
+                root.removeAttribute(
+                    'data-theme'
+                );
+
+            }
+
+            else {
+
+                root.setAttribute(
+                    'data-theme',
+                    'light'
+                );
+
+            }
+
+
+            localStorage.setItem(
+                'successai-theme',
+                next
+            );
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>

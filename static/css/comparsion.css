@@ -1,0 +1,149 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 40px;
+    background: #050505;
+    color: #00bfff;
+    font-family: "Courier New", monospace;
+}
+
+.comparison-container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+h1 {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+h2 {
+    margin-top: 35px;
+    margin-bottom: 10px;
+}
+
+.subtitle,
+.description {
+    color: #aaa;
+}
+
+.section {
+    margin-top: 30px;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #0b0b0b;
+}
+
+th {
+    background: #111;
+    color: #00bfff;
+    padding: 16px;
+    border: 1px solid #333;
+    text-align: center;
+    white-space: nowrap;
+}
+
+td {
+    padding: 15px;
+    border: 1px solid #333;
+    text-align: center;
+    color: #ddd;
+}
+
+td.model-name {
+    text-align: left;
+    font-weight: bold;
+    color: #fff;
+    white-space: nowrap;
+}
+
+tr:hover {
+    background: #151515;
+}
+
+.best-row {
+    background: #10251c;
+    border: 1px solid #00ff88;
+}
+
+.best-row td {
+    color: #fff;
+}
+
+.best-badge {
+    display: inline-block;
+    margin-left: 12px;
+    padding: 4px 8px;
+    border: 1px solid #00ff88;
+    color: #00ff88;
+    font-size: 12px;
+}
+
+.prediction-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid #00bfff;
+    color: #00bfff;
+    font-weight: bold;
+}
+
+.accuracy {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.best-model {
+    margin-top: 40px;
+    padding: 25px;
+    border: 1px solid #00ff88;
+    background: #08140e;
+    text-align: center;
+}
+
+.best-model h2 {
+    margin-top: 0;
+}
+
+.best-model-name {
+    font-size: 28px;
+    font-weight: bold;
+    color: #00ff88;
+    margin: 15px 0;
+}
+
+.best-model p {
+    color: #aaa;
+}
+
+.buttons {
+    margin-top: 35px;
+    text-align: center;
+}
+
+button {
+    padding: 12px 20px;
+    margin: 5px;
+    background: #111;
+    color: #00bfff;
+    border: 1px solid #00bfff;
+    cursor: pointer;
+    font-family: "Courier New", monospace;
+    font-size: 14px;
+}
+
+button:hover {
+    background: #00bfff;
+    color: #000;
+}

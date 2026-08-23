@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Prediction Analysis</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/xai.css') }}">
+
+</head>
+
+<body>
+
+    <div class="xai-container">
+
+        <h1>Prediction Analysis</h1>
+
+
+        <!-- ==============================
+             PREDICTION
+        =============================== -->
+
+        <div class="prediction-card">
+
+    <h2>Predicted Performance</h2>
+
+    <h1>{{ prediction }}</h1>
+
+    <p>
+        Model Used:
+        <strong>{{ model_name }}</strong>
+    </p>
+
+    
+
+
+        <!-- ==============================
+             XAI EXPLANATION
+        =============================== -->
+
+        <div class="explanation-card">
+
+            <h2>Why This Prediction?</h2>
+
+            <p>
+                The following features had the
+                greatest influence on this prediction.
+            </p>
+
+
+            {% if explanation %}
+
+                {% for item in explanation[:4] %}
+
+                <div class="factor">
+
+    <div class="factor-header">
+
+        <span>
+            {{ item.feature }}
+        </span>
+
+        <span>
+            {{ "%.2f"|format(item.importance_percentage) }}%
+        </span>
+
+    </div>
+
+
+    <div class="bar">
+
+        <div
+            class="bar-fill"
+            style="--bar-width: {{ item.importance_percentage|round(2) }}%;">
+        </div>
+
+    </div>
+
+
+    <p>
+        Importance:
+        {{ "%.2f"|format(item.importance_percentage) }}%
+    </p>
+
+</div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p>
+                    Explanation is not available.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- ==============================
+             RECOMMENDATIONS
+        =============================== -->
+
+        {% if recommendations %}
+
+        <div class="recommendations">
+
+            <h2>💡 Personalized Recommendations</h2>
+
+            <ul>
+
+                {% for recommendation in recommendations %}
+
+                <li>
+                    {{ recommendation }}
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+        {% endif %}
+
+
+
+
+        <!-- ==============================
+             BUTTONS
+        =============================== -->
+
+        <a href="{{ url_for('prediction.predict_page') }}">
+
+            <button type="button">
+                Make Another Prediction
+            </button>
+
+        </a>
+
+
+        <a href="{{ url_for('model.models_page') }}">
+
+            <button type="button">
+                📊 View Model Analysis
+            </button>
+
+        </a>
+
+
+        <br><br>
+
+        <a href="{{ url_for('auth.logout') }}">
+            Logout
+        </a>
+
+    </div>
+
+</body>
+
+</html>
