@@ -4,7 +4,10 @@ from flask import (
     request,
     redirect,
     url_for,
-    session
+    session,
+    Response,
+    stream_with_context,
+    jsonify
 )
 
 import pandas as pd
@@ -29,6 +32,10 @@ from utils.recommendations import (
 from utils.explainable_ai import (
     generate_explanation
 )
+
+from services.qwen_service import stream_qwen
+
+import json
 
 
 prediction_bp = Blueprint(
@@ -475,6 +482,7 @@ def predict():
 
 
 
+
 # ====================================================
 # GENERATE RECOMMENDATIONS
 # ====================================================
@@ -483,6 +491,25 @@ def predict():
             input_data,
             prediction
         )
+
+
+    # ====================================================
+    # GENERATE QWEN AI EXPLANATION
+    # ====================================================
+
+        print("1. Prediction started")
+
+        # After ML prediction
+        print("2. ML prediction completed")
+
+        # After SHAP explanation
+        print("3. SHAP explanation completed")
+
+        # Before Qwen
+        print("4. Sending request to Qwen")
+
+      
+        print("5. Qwen response received")
 
 
 
@@ -495,17 +522,14 @@ def predict():
     # ====================================================
 
         return render_template(
-        "xai.html",
-
-        prediction=prediction,
-        model_name=best_model_name,
-        recommendations=recommendations,
-        all_predictions=all_predictions,
-        explanation=explanation
-
-        
+    "xai.html",
+    prediction=prediction,
+    model_name=best_model_name,
+    recommendations=recommendations,
+    all_predictions=all_predictions,
+    explanation=explanation,
+    input_data=input_data
 )
-
 
 
       
@@ -518,3 +542,44 @@ def predict():
 
             error=f"Prediction Error: {str(e)}"
         )
+
+
+@prediction_bp.route("/ai-stream", methods=["POST"])
+def ai_stream():
+    try:
+        data = request.get_json()
+
+        prediction = data.get("prediction")
+        input_data = data.get("input_data")
+        explanation = data.get("explanation")
+        recommendations = data.get("recommendations")
+
+        prompt = f"""
+You are an AI student performance advisor.
+
+Prediction: {prediction}
+Student Data: {input_data}
+SHAP Explanation: {explanation}
+Recommendations: {recommendations}
+
+Explain the student's performance in simple language.
+Give practical improvement suggestions.
+Keep the response concise.
+"""
+
+        @stream_with_context
+        def generate():
+            for chunk in stream_qwen(prompt):
+                yield chunk
+
+        return Response(
+            generate(),
+            content_type="text/plain; charset=utf-8"
+        )
+
+    except Exception as e:
+        print("AI Stream Error:", e)
+
+        return jsonify({
+            "error": "Unable to generate AI explanation."
+        }), 500

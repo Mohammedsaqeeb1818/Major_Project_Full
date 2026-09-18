@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -28,18 +29,16 @@
 
         <div class="prediction-card">
 
-    <h2>Predicted Performance</h2>
+            <h2>Predicted Performance</h2>
 
-    <h1>{{ prediction }}</h1>
+            <h1>{{ prediction }}</h1>
 
-    <p>
-        Model Used:
-        <strong>{{ model_name }}</strong>
-    </p>
-    
-    
+            <p>
+                Model Used:
+                <strong>{{ model_name }}</strong>
+            </p>
 
-    
+        </div>
 
 
         <!-- ==============================
@@ -55,42 +54,39 @@
                 greatest influence on this prediction.
             </p>
 
-
             {% if explanation %}
 
                 {% for item in explanation[:4] %}
 
                 <div class="factor">
 
-    <div class="factor-header">
+                    <div class="factor-header">
 
-        <span>
-            {{ item.feature }}
-        </span>
+                        <span>
+                            {{ item.feature }}
+                        </span>
 
-        <span>
-            {{ "%.2f"|format(item.importance_percentage) }}%
-        </span>
+                        <span>
+                            {{ "%.2f"|format(item.importance_percentage) }}%
+                        </span>
 
-    </div>
+                    </div>
 
+                    <div class="bar">
 
-    <div class="bar">
+                        <div
+                            class="bar-fill"
+                            style="--bar-width: {{ item.importance_percentage|round(2) }}%;">
+                        </div>
 
-        <div
-            class="bar-fill"
-            style="--bar-width: {{ item.importance_percentage|round(2) }}%;">
-        </div>
+                    </div>
 
-    </div>
+                    <p>
+                        Importance:
+                        {{ "%.2f"|format(item.importance_percentage) }}%
+                    </p>
 
-
-    <p>
-        Importance:
-        {{ "%.2f"|format(item.importance_percentage) }}%
-    </p>
-
-</div>
+                </div>
 
                 {% endfor %}
 
@@ -132,6 +128,48 @@
         {% endif %}
 
 
+        <!-- ==============================
+             AI CONFIGURATION
+        =============================== -->
+
+        <div id="ai-config"
+
+             data-stream-url="{{ url_for('prediction.ai_stream') }}"
+
+             data-prediction='{{ prediction | tojson | safe }}'
+
+             data-input='{{ input_data | tojson | safe }}'
+
+             data-explanation='{{ explanation | tojson | safe }}'
+
+             data-recommendations='{{ recommendations | tojson | safe }}'>
+
+        </div>
+
+
+        <!-- ==============================
+             QWEN AI EXPLANATION
+        =============================== -->
+
+        <div class="explanation-card ai-explanation">
+
+            <h2>🤖 AI Performance Explanation</h2>
+
+            <button
+                type="button"
+                onclick="generateAIExplanation()">
+
+                Generate AI Explanation
+
+            </button>
+
+            <div class="ai-content">
+
+                <pre id="ai-output">Click the button to generate an AI explanation.</pre>
+
+            </div>
+
+        </div>
 
 
         <!-- ==============================
@@ -158,11 +196,21 @@
 
         <br><br>
 
+
         <a href="{{ url_for('auth.logout') }}">
             Logout
         </a>
 
+
     </div>
+
+
+    <!-- ==============================
+         EXTERNAL JAVASCRIPT
+    =============================== -->
+
+    <script src="{{ url_for('static', filename='js/xai.js') }}"></script>
+
 
 </body>
 
