@@ -583,3 +583,126 @@ Keep the response concise.
         return jsonify({
             "error": "Unable to generate AI explanation."
         }), 500
+
+
+@prediction_bp.route("/study-planner")
+def study_planner_page():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+
+    return render_template("study_planner.html")
+
+
+
+@prediction_bp.route("/generate-study-plan", methods=["POST"])
+def generate_study_plan():
+    if "user_id" not in session:
+        return {"error": "Please login first"}, 401
+
+    try:
+        data = request.get_json()
+
+        difficult_subject = data.get("difficult_subject")
+        study_goal = data.get("study_goal")
+        available_hours = data.get("available_hours")
+
+        if not difficult_subject or not study_goal or not available_hours:
+            return {"error": "Please fill all fields"}, 400
+
+        prompt = f"""
+You are an AI study planner for college students.
+
+Subject: {difficult_subject}
+Goal: {study_goal}
+Available Hours Per Day: {available_hours}
+
+Create a short and practical DAILY STUDY TIMETABLE.
+
+Use this exact format:
+
+### Daily Timetable
+- Session 1: Concept Learning - 40% of time
+- Session 2: Practice Questions - 40% of time
+- Session 3: Revision - 20% of time
+
+### Important Topics
+- List exactly 4 important topics.
+
+### Daily Tasks
+- Give exactly 3 tasks.
+
+### Revision Tips
+- Give exactly 2 tips.
+
+Rules:
+- Maximum 180 words.
+- Use the available hours per day.
+- Keep the plan practical for college students.
+- Avoid repetition.
+- Do not create a multi-week plan.
+- Complete every section.
+"""
+
+        ai_plan = stream_qwen(prompt)
+
+        return {
+            "subject": difficult_subject,
+            "goal": study_goal,
+            "hours": available_hours,
+            "plan": str(ai_plan)
+        }
+
+    except Exception as e:
+        print("Study Planner Error:", e)
+        return {"error": str(e)}, 500
+
+
+
+#============================================================
+# PREDICTION HISTORY
+#============================================================
+
+@prediction_bp.route("/prediction-history")
+def prediction_history():
+
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        query = """
+            SELECT
+                id,
+                previous_sgpa,
+                attendance_percentage,
+                backlogs,
+                prediction,
+                created_at
+            FROM prediction_history
+            WHERE user_id = %s
+            ORDER BY created_at DESC
+        """
+
+        cursor.execute(query, (session["user_id"],))
+        history = cursor.fetchall()
+
+        return render_template(
+            "prediction_history.html",
+            history=history
+        )
+
+    except Exception as e:
+        print("Prediction History Error:", e)
+        return "Error loading prediction history", 500
+
+    finally:
+        if cursor:
+            cursor.close()
+
+        if connection:
+            connection.close()
